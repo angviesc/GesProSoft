@@ -9,3 +9,4 @@
     <link type="text/css" rel="stylesheet" href="<?=base_url('assets/css/materialize.min.css')?>"  media="screen,projection"/>
     <link rel="stylesheet" href="<?= base_url('assets/css/estilos.css')?>">
   </head>
+  <body>
