@@ -22,7 +22,8 @@ class Sistemactrl extends CI_Controller {
     date_default_timezone_set("America/Mexico_City");
     setlocale(LC_TIME, 'spanish');
     //Librerias
-    //$this->load->library('my_phpmailer');
+    $this->load->library('user_agent');
+
 
     // Helpers
     $this->load->helper('date');
@@ -62,18 +63,48 @@ class Sistemactrl extends CI_Controller {
   public function inicioAdm(){
     $this->load->view('encabezado');
     echo Crear_menu($this->arr_MenAdmin);
-    echo "Inicio Administrador";
+    echo "Inicio Administrador<br>";
+    echo $this->agent->platform()."<br>";
+    echo ($this->agent->is_mobile())? "Movil" : "Escritorio";
     $this->load->view('pie');
   }
 
-  public function nuevoBio($value=''){
+  public function nuevoBio(){
     $this->load->view('encabezado');
     $this->load->view('GestionBio/nuevoBio');
     $this->load->view('pie');
   }
 
-  public function verBio($value=''){
+  public function insertarBio(){
+    if ($this->input->post('submitGua')){
+      $empleado = $this->input->post();
+      $usuario = array('usuario' => $empleado['usuario'],
+      'password' => md5($empleado['password']),
+      'tipo' => 2);
+      unset ($empleado['usuario']);
+      unset ($empleado['password']);
+      unset ($empleado['password2']);
+      unset ($empleado['submitGua']);
+      $this->modeloctrl->insertarBio($empleado,$usuario);
+      echo '<script language="javascript">
+			window.opener.document.location="verBio/"
+			window.close();
+			</script>';
+    }
+  }
 
+  public function verBio(){
+    $data['biomedicos'] = $this->modeloctrl->selectBio();
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                   'scrollbars' => 'yes', 'status' => 'yes',
+                   'resizable' => 'yes', 'screenx' => 100,
+                   'screeny' => 100, 'window_name' => '_blank',
+                    'id' => 'jump');
+
+    $this->load->view('encabezado');
+    echo Crear_menu($this->arr_MenAdmin);
+    $this->load->view('GestionBio/verBiomedicos',$data);
+    $this->load->view('pie');
   }
 
 #Funciones Biomedico

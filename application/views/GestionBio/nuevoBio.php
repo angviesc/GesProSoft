@@ -27,7 +27,7 @@
   </div>
   <div class="input-field">
     <input type="text" name="calle" id="calle" required>
-    <label for="calle">Call:e</label>
+    <label for="calle">Calle:</label>
   </div>
   <div class="input-field">
     <input type="text" name="cod_pos" id="cod_pos" required>
@@ -46,11 +46,12 @@
     <label for="password">Contraseña</label>
   </div>
   <div class="input-field">
-    <input type="password" name="password" id="password" required>
-    <label for="password">Confirmar Contraseña</label>
+    <input type="password" name="password2" id="password2" required>
+    <label for="password2">Confirmar Contraseña</label>
   </div>
   <div class="row">
-    <?= form_submit('submitAcc','Guardar','class="col s12 btn btn-large waves-effect blue accent-4"')?>
+    <?= form_submit('submitGua','Guardar','class="col s6 btn btn-large waves-effect blue accent-4"')?>
+    <button type="button" name="button" class="col s6 btn btn-large waves-effect blue accent-4" onclick="cerrarVentana()">Cancelar</button>    
   </div>
   <?= form_close()?>
 </div>

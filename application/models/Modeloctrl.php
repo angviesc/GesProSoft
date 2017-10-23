@@ -20,4 +20,26 @@ class Modeloctrl extends CI_Model{
 
 	}
 
+	function insertarBio($empleado,$usuario){
+		$this->db->set($empleado);
+		$this->db->insert('empleados');
+		$id = $this->db->query('SELECT @@identity AS id');
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$usuario['id_empleado'] = $id[0]->id;
+			$this->db->set($usuario);
+			$this->db->insert('usuarios');
+		}else
+			return -1;
+	}
+
+	function selectBio(){
+		$this->db->select('u.id, e.nombre, e.apellidop, apellidom, u.usuario, u.tipo');
+		$this->db->where('u.activo', 1);
+		$this->db->join('empleados e', 'u.id_empleado = e.id','inner');
+		$res = $this->db->get('usuarios u');
+
+		return json_decode(json_encode($res->result()), True);
+	}
+
 }
