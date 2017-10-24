@@ -6,11 +6,28 @@ class Sistemactrl extends CI_Controller {
   function __construct(){
     parent::__construct();
 
-    $this->arr_MenAdmin = array('Evaluar' => site_url('Sistemactrl/evaluar_propuestas'),
-                                'Documentos' => site_url('Sistemactrl/documentos_admin'),
-                                'Administrar Biomédico' => array(
-                                      'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio') ),
+
+    $this->arr_MenAdmin = array('Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
+                                'Inventario' => array(
+                                      'Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
+                                      'Buscar articulo' => site_url('Sistemactrl/buscararticulo'),
+                                      'Ver inventario' => site_url('Sistemactrl/verInventario'),
+                                      'Abrir lista de pedidos' => site_url('Sistemactrl/verPedidos')),
+                                'Stock' => array(
+                                      'Vender stock' => site_url('Sistemactrl/venderStock'),
+                                      'Recibir stock' => site_url('Sistemactrl/verBio'),
+                                      'Pedir stock' => site_url('Sistemactrl/verBio'),
+                                      'Transferir stock' => site_url('Sistemactrl/verBio')),
+                                'Departamentos' => array(
+                                      'Departamento nuevo' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm')),
+                                      'Ver lista de departamentos' => site_url('Sistemactrl/verBio')),
+                                'Almacenes' => array(
+                                      'Nuevo almacen' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm')),
+                                      'Ver Almacenes' => site_url('Sistemactrl/verBio')),
+                                'Administrar Biomédicos' => array(
+                                      'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
                                       'Ver Biomedicos' => site_url('Sistemactrl/verBio')),
+                                'Documentos' => site_url('Sistemactrl/documentos_admin'),
 								                'Cerrar sesion' => site_url('Sistemactrl/cerrar_sesion'));
 
     $this->arr_MenAcademico = array('Nueva solicitud de viáticos' => site_url('Sistemactrl/nuevo_viaje'),
@@ -62,7 +79,8 @@ class Sistemactrl extends CI_Controller {
 
   public function inicioAdm(){
     $this->load->view('encabezado');
-    echo Crear_menu($this->arr_MenAdmin);
+    //echo Crear_menu($this->arr_MenAdmin);
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
     echo "Inicio Administrador<br>";
     echo $this->agent->platform()."<br>";
     echo ($this->agent->is_mobile())? "Movil" : "Escritorio";
@@ -102,9 +120,38 @@ class Sistemactrl extends CI_Controller {
                     'id' => 'jump');
 
     $this->load->view('encabezado');
-    echo Crear_menu($this->arr_MenAdmin);
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
     $this->load->view('GestionBio/verBiomedicos',$data);
     $this->load->view('pie');
+  }
+
+  public function editarBio(){
+    $id = $this->uri->segment(3);
+    $bio = $this->modeloctrl->consultaBio($id);
+    $data['biomedico'] = $bio[0];
+    $this->load->view('encabezado');
+    $this->load->view('GestionBio/editarBio',$data);
+    $this->load->view('pie');
+  }
+
+  public function actualizarBio(){
+    if ($this->input->post('submitGua')){
+      $empleado = $this->input->post();
+      $id_empleado = $empleado['id_empleado'];
+      /*
+      $usuario = array('usuario' => $empleado['usuario'],
+      'password' => md5($empleado['password']),
+      'tipo' => 2);*/
+      unset ($empleado['id_empleado']);
+      //unset ($empleado['id_us']);
+      //unset ($empleado['password2']);
+      unset ($empleado['submitGua']);
+      $this->modeloctrl->actualizarBio($empleado,$id_empleado);
+      echo '<script language="javascript">
+      window.opener.document.location="verBio/"
+      window.close();
+      </script>';
+    }
   }
 
 #Funciones Biomedico

@@ -1,7 +1,7 @@
 <div class="container">
   <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo', $atts) ?>
-  <a href="#">Editar </a>
-  <a href="#">Eliminar </a>
+  <a href="#" onclick="ventanaFlotante(this)" name="editarBio">Editar</a>
+  <a href="#" onclick="ventanaFlotante(this)" name="eliminarBio">Eliminar</a>
   <table class="bordered highlight">
     <thead>
       <tr>
@@ -23,3 +23,5 @@
     </tbody>
   </table>
 </div>
+<input type="hidden" name="id_activo" id="id_activo" value="" />
+<input type="hidden" name="link" id="link" value="<?=site_url('Sistemactrl')?>" />

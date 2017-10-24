@@ -42,4 +42,18 @@ class Modeloctrl extends CI_Model{
 		return json_decode(json_encode($res->result()), True);
 	}
 
+	function consultaBio($id){
+		$this->db->where('u.id', $id);
+		$this->db->where('u.activo', 1);
+		$this->db->join('empleados e', 'u.id_empleado = e.id','inner');
+		$res = $this->db->get('usuarios u');
+
+		return json_decode(json_encode($res->result()), True);
+	}
+
+	function actualizarBio($empleado,$id){
+		$this->db->where('id',$id);
+		$this->db->update('empleados',$empleado);
+	}
+
 }
