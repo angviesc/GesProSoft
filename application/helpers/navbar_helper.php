@@ -59,7 +59,10 @@ function Crear_menuMaterial($usuario, $arr_menu){
           if (is_array($subitem)){
             $menu .= '<li>'.anchor_popup($subitem['popUp'], key($item), $atts).'</li>';
           }else{
-            $menu .= '<li><a href="'.$subitem.'">'.key($item).'</a></li>';
+            if ($subitem == 'divider')
+              $menu .= '<li class="divider"></li>';
+            else
+              $menu .= '<li><a href="'.$subitem.'">'.key($item).'</a></li>';
           }
           next($item);
         }
@@ -84,13 +87,15 @@ function Crear_menuMaterial($usuario, $arr_menu){
           if (is_array($subitem)){
             $menu .= '<li>'.anchor_popup($subitem['popUp'], key($item), $atts).'</li>';
           }else{
-
-            $menu .= '<li><a href="'.$subitem.'">'.key($item).'</a></li>';
+            if ($subitem == 'divider')
+              $menu .= '<li class="divider"></li>';
+            else
+              $menu .= '<li><a href="'.$subitem.'">'.key($item).'</a></li>';            
           }
           next($item);
         }
         $idrop++;
-        $menu .= '</ul>';        
+        $menu .= '</ul>';
       }
     }
     $drop = false;
@@ -100,7 +105,7 @@ function Crear_menuMaterial($usuario, $arr_menu){
   reset($arr_menu);
   //echo $menu;  exit;
   $menu .= '<nav>
-    <div class="nav-wrapper blue darken-4">
+    <div class="nav-wrapper blue-grey darken-4">
     <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
     <ul class="right hide-on-med-and-down">';
     //<a href="#!" class="brand-logo"><img class="responsive-img" style="width: 150px; padding-top: 3px; padding-left: 2px;" src="'.base_url('assets/img/UNAM_ENES_blanco.png').'" alt=""></a>

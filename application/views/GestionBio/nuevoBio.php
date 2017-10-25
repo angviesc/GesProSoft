@@ -51,7 +51,7 @@
   </div>
   <div class="row">
     <?= form_submit('submitGua','Guardar','class="col s6 btn btn-large waves-effect blue accent-4"')?>
-    <button type="button" name="button" class="col s6 btn btn-large waves-effect blue accent-4" onclick="cerrarVentana()">Cancelar</button>    
+    <button type="button" name="button" class="col s6 btn btn-large waves-effect blue accent-4" onclick="cerrarVentana()">Cancelar</button>
   </div>
   <?= form_close()?>
 </div>

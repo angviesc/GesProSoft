@@ -56,4 +56,11 @@ class Modeloctrl extends CI_Model{
 		$this->db->update('empleados',$empleado);
 	}
 
+	function eliminarBio($id){
+		$this->db->set('activo',0);
+		$this->db->where('id_empleado',$id);
+		$this->db->update('usuarios');		
+
+	}
+
 }

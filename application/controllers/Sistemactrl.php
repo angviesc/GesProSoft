@@ -6,14 +6,14 @@ class Sistemactrl extends CI_Controller {
   function __construct(){
     parent::__construct();
 
-
     $this->arr_MenAdmin = array('Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
                                 'Inventario' => array(
                                       'Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
                                       'Buscar articulo' => site_url('Sistemactrl/buscararticulo'),
                                       'Ver inventario' => site_url('Sistemactrl/verInventario'),
-                                      'Abrir lista de pedidos' => site_url('Sistemactrl/verPedidos')),
-                                'Stock' => array(
+                                      'divider',
+                                      'Abrir lista de pedidos' => site_url('Sistemactrl/verPedidos'),
+                                      'divider',
                                       'Vender stock' => site_url('Sistemactrl/venderStock'),
                                       'Recibir stock' => site_url('Sistemactrl/verBio'),
                                       'Pedir stock' => site_url('Sistemactrl/verBio'),
@@ -24,11 +24,21 @@ class Sistemactrl extends CI_Controller {
                                 'Almacenes' => array(
                                       'Nuevo almacen' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm')),
                                       'Ver Almacenes' => site_url('Sistemactrl/verBio')),
+                                'Proveedores' => array(
+                                      'Nuevo proveedor' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
+                                      'Ver proveedores' => site_url('Sistemactrl/verBio')),
+                                'Clientes' => array(
+                                      'Nuevo cliente' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
+                                      'Ver clientes' => site_url('Sistemactrl/verBio')),
                                 'Administrar Biomédicos' => array(
                                       'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
                                       'Ver Biomedicos' => site_url('Sistemactrl/verBio')),
-                                'Documentos' => site_url('Sistemactrl/documentos_admin'),
+                                'Informes' => array(
+                                      'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
+                                      'Ver Biomedicos' => site_url('Sistemactrl/verBio')),
 								                'Cerrar sesion' => site_url('Sistemactrl/cerrar_sesion'));
+
+
 
     $this->arr_MenAcademico = array('Nueva solicitud de viáticos' => site_url('Sistemactrl/nuevo_viaje'),
     															'Mis solicitudes de viáticos' => site_url('Sistemactrl/mis_viajes'),
@@ -105,7 +115,7 @@ class Sistemactrl extends CI_Controller {
       unset ($empleado['submitGua']);
       $this->modeloctrl->insertarBio($empleado,$usuario);
       echo '<script language="javascript">
-			window.opener.document.location="verBio/"
+			window.opener.document.location="verBio/INSERT_OK"
 			window.close();
 			</script>';
     }
@@ -117,7 +127,7 @@ class Sistemactrl extends CI_Controller {
                    'scrollbars' => 'yes', 'status' => 'yes',
                    'resizable' => 'yes', 'screenx' => 100,
                    'screeny' => 100, 'window_name' => '_blank',
-                    'id' => 'jump');
+                    'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
     $this->load->view('encabezado');
     echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
@@ -148,10 +158,15 @@ class Sistemactrl extends CI_Controller {
       unset ($empleado['submitGua']);
       $this->modeloctrl->actualizarBio($empleado,$id_empleado);
       echo '<script language="javascript">
-      window.opener.document.location="verBio/"
+      window.opener.document.location="verBio/UPDATE_OK"
       window.close();
       </script>';
     }
+  }
+
+  public function eliminarBio(){
+    $this->modeloctrl->eliminarBio($this->input->post('id_activo'));
+    redirect('Sistemactrl/verBio/DELETE_OK','refresh');
   }
 
 #Funciones Biomedico

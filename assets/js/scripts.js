@@ -10,13 +10,46 @@ function ventanaFlotante(ventana){
               return false;
 }
 
+function validaBio(formulario){
+  if (formulario.name){
+    if ($('#ctrl-active').prop('checked')){
+      if ($('#password').val().localeCompare($('#password2').val()) == 0){
+        return true;
+      }else{
+        alert('Las contraseñas deben coincidir');
+        return false;
+      }
+    }
+  }else{
+    if ($('#password').val().localeCompare($('#password2').val()) == 0){
+      return true;
+    }else{
+      alert('Las contraseñas deben coincidir');
+      return false;
+    }
+  }
+}
+
+$('#ctrl-active').click(function(){
+  if ($(this).prop('checked')){
+    $('.bloqueado').attr('disabled', false);
+  }else {
+    $('.bloqueado').attr('disabled', true);
+  }
+});
+
 $('tbody tr').on('click',function (){
-  $('td').removeClass( "active-bio" )
+  $('td').removeClass( "active-bio" );
+  $('a').removeClass(' disabled');
+
   $(this).children('td').addClass( "active-bio" );
   //$('#jump').attr('href','2');
   //alert($('#jump').attr('onclick'));
   $('#id_activo').val($(this).children('input').val());
 });
 
-//Inizializando elementos 
-$(".button-collapse").sideNav();
+
+
+//Inizializando elementos
+$('.modal').modal();
+$('.button-collapse').sideNav();
