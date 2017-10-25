@@ -72,6 +72,7 @@ CREATE TABLE articulo_unico(id_articulo INT,
       marca VARCHAR(60), 
       modelo VARCHAR(60),      
       serie VARCHAR(60),
+      fecha_rgistro TIMESTAMP,
       fecha_instalacion DATE,
       FOREIGN KEY (id_articulo) REFERENCES articulos(id));
 

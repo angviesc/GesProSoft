@@ -5,3 +5,10 @@ VALUES (1,'Administrador','Sistema','3 33 33 33', 'Calle numero 33', 'Colonia ta
 
 INSERT INTO usuarios (usuario, password, id_empleado, tipo)
 VALUES ('Admin',md5('pass'), 1, 1);
+
+//Debería ir
+ALTER TABLE clientes ADD correo VARCHAR(40) NOT NULL AFTER activo;
+
+/*ALTER TABLE clientes ADD direnvio VARCHAR(50) NOT NULL AFTER correo;
+ALTER TABLE clientes ADD correo VARCHAR(40) NOT NULL AFTER activo;*/
+
