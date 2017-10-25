@@ -9,7 +9,7 @@
     <label for="password">Contraseña</label>
   </div>
   <div class="row">
-    <?= form_submit('submitAcc','Acceder','class="col s12 btn btn-large waves-effect blue accent-4"')?>
+    <?= form_submit('submitAcc','Acceder','class="col s12 btn waves-effect blue darken-3"')?>
   </div>
-  <?= form_close()?>  
+  <?= form_close()?>
 </div>

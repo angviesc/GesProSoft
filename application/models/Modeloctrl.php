@@ -43,6 +43,7 @@ class Modeloctrl extends CI_Model{
 	}
 
 	function consultaBio($id){
+		$this->db->select('u.id AS id_usuario, u.usuario ,e.*');
 		$this->db->where('u.id', $id);
 		$this->db->where('u.activo', 1);
 		$this->db->join('empleados e', 'u.id_empleado = e.id','inner');
@@ -56,10 +57,15 @@ class Modeloctrl extends CI_Model{
 		$this->db->update('empleados',$empleado);
 	}
 
+	function actualizarUsu($usuario,$id){
+		$this->db->where('id',$id);
+		$this->db->update('usuarios',$usuario);
+	}
+
 	function eliminarBio($id){
 		$this->db->set('activo',0);
-		$this->db->where('id_empleado',$id);
-		$this->db->update('usuarios');		
+		$this->db->where('id',$id);
+		$this->db->update('usuarios');
 
 	}
 

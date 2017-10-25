@@ -41,6 +41,9 @@ $('#ctrl-active').click(function(){
 $('tbody tr').on('click',function (){
   $('td').removeClass( "active-bio" );
   $('a').removeClass(' disabled');
+  if ($(this).children('input').val() == 1){
+    $('#eliminarBio').addClass('disabled');
+  }
 
   $(this).children('td').addClass( "active-bio" );
   //$('#jump').attr('href','2');

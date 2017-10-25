@@ -1,5 +1,8 @@
 <div class="container">
-  <?= form_open('Sistemactrl/actualizarBio','name = "editarBio" onsubmit="return validaBio(this);"',array('id_empleado' => $biomedico['id']))?>
+  <?php
+  //echo "<pre>";  print_r($biomedico);
+  ?>
+  <?= form_open('Sistemactrl/actualizarBio','name = "editarBio" onsubmit="return validaBio(this);"',array('id_usuario' => $biomedico['id_usuario'], 'id_empleado' => $biomedico['id']))?>
   <h4>Nuevo Biomédico</h4>
   <div class="input-field">
     <input type="text" name="nombre" id="nombre" value="<?=$biomedico['nombre']?>" required>
@@ -41,7 +44,7 @@
     ¿Editar datos de inicio de sesion?
     <label>
       No
-      <input type="checkbox" id="ctrl-active">
+      <input type="checkbox" name = "update_usuario" id="ctrl-active">
       <span class="lever"></span>
       Sí
     </label>
@@ -61,8 +64,8 @@
     <label for="password2">Confirmar Contraseña</label>
   </div>
   <div class="row">
-    <?= form_submit('submitGua','Guardar','class="col s6 btn btn-large waves-effect blue accent-4"')?>
-    <button type="button" name="button" class="col s6 btn btn-large waves-effect blue accent-4" onclick="cerrarVentana()">Cancelar</button>
+    <?= form_submit('submitGua','Guardar','class="waves-effect waves-light btn green darken-3 col s6"')?>
+    <button type="button" name="button" class="waves-effect waves-light btn red lighten-1 col s6" onclick="cerrarVentana()">Cancelar</button>
   </div>
   <?= form_close()?>
 </div>

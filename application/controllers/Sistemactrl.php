@@ -51,7 +51,6 @@ class Sistemactrl extends CI_Controller {
     //Librerias
     $this->load->library('user_agent');
 
-
     // Helpers
     $this->load->helper('date');
 
@@ -62,8 +61,14 @@ class Sistemactrl extends CI_Controller {
     $this->load->model('modeloctrl');
   }
 
-	public function index()
-	{
+	public function index(){
+    $this->load->view('encabezado');
+		$this->load->view('welcome');
+		$this->load->view('login/acceso');
+		$this->load->view('pie');
+	}
+
+  public function acceso(){
     $this->load->view('encabezado');
 		$this->load->view('welcome');
 		$this->load->view('login/acceso');
@@ -76,8 +81,14 @@ class Sistemactrl extends CI_Controller {
     $datos = $this->modeloctrl->validarAcceso($acceso);
     if ($datos != null){
       if ($datos[0]['tipo'] == 1){
+        $this->session->set_userdata('tipo',1);
+        $this->session->set_userdata('usuario' , $datos[0]['nombre'].' '.$datos[0]['apellidop'].' '.$datos[0]['apellidom']);
+        $this->session->set_userdata( 'id' , $datos[0]['id']);
         redirect('Sistemactrl/inicioAdm','refresh');
-      }else{
+      }else if ($datos[0]['tipo'] == 2){
+        $this->session->set_userdata('tipo',2);
+        $this->session->set_userdata('usuario' , $datos[0]['nombre'].' '.$datos[0]['apellidop'].' '.$datos[0]['apellidom']);
+        $this->session->set_userdata( 'id' , $datos[0]['id']);
         redirect('Sistemactrl/inicioBio','refresh');
       }
     }else{
@@ -88,19 +99,27 @@ class Sistemactrl extends CI_Controller {
 #Funciones Administrador
 
   public function inicioAdm(){
-    $this->load->view('encabezado');
-    //echo Crear_menu($this->arr_MenAdmin);
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
-    echo "Inicio Administrador<br>";
-    echo $this->agent->platform()."<br>";
-    echo ($this->agent->is_mobile())? "Movil" : "Escritorio";
-    $this->load->view('pie');
+    if ($this->session->userdata('tipo') == 1){
+      $this->load->view('encabezado');
+      //echo Crear_menu($this->arr_MenAdmin);
+      echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+      echo "Inicio Administrador<br>";
+      echo $this->agent->platform()."<br>";
+      echo ($this->agent->is_mobile())? "Movil" : "Escritorio";
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
   }
 
   public function nuevoBio(){
-    $this->load->view('encabezado');
-    $this->load->view('GestionBio/nuevoBio');
-    $this->load->view('pie');
+    if ($this->session->userdata('tipo') == 1){
+      $this->load->view('encabezado');
+      $this->load->view('GestionBio/nuevoBio');
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
   }
 
   public function insertarBio(){
@@ -122,40 +141,53 @@ class Sistemactrl extends CI_Controller {
   }
 
   public function verBio(){
-    $data['biomedicos'] = $this->modeloctrl->selectBio();
-    $data['atts'] = array( 'width' => 800, 'height' => 700,
+    if ($this->session->userdata('tipo') == 1){
+
+      $data['biomedicos'] = $this->modeloctrl->selectBio();
+      $data['atts'] = array( 'width' => 800, 'height' => 700,
                    'scrollbars' => 'yes', 'status' => 'yes',
                    'resizable' => 'yes', 'screenx' => 100,
                    'screeny' => 100, 'window_name' => '_blank',
                     'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
-    $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
-    $this->load->view('GestionBio/verBiomedicos',$data);
-    $this->load->view('pie');
+      $this->load->view('encabezado');
+      echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+      $this->load->view('GestionBio/verBiomedicos',$data);
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
   }
 
   public function editarBio(){
-    $id = $this->uri->segment(3);
-    $bio = $this->modeloctrl->consultaBio($id);
-    $data['biomedico'] = $bio[0];
-    $this->load->view('encabezado');
-    $this->load->view('GestionBio/editarBio',$data);
-    $this->load->view('pie');
+    if ($this->session->userdata('tipo') == 1){
+      $id = $this->uri->segment(3);
+      $bio = $this->modeloctrl->consultaBio($id);
+      $data['biomedico'] = $bio[0];
+      $this->load->view('encabezado');
+      $this->load->view('GestionBio/editarBio',$data);
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
   }
 
   public function actualizarBio(){
     if ($this->input->post('submitGua')){
       $empleado = $this->input->post();
       $id_empleado = $empleado['id_empleado'];
-      /*
-      $usuario = array('usuario' => $empleado['usuario'],
-      'password' => md5($empleado['password']),
-      'tipo' => 2);*/
+      if ($empleado['update_usuario']){
+        $id_usuario = $empleado['id_usuario'];
+        $usuario = array('password' => md5($empleado['password']));
+        unset ($empleado['password']);
+        unset ($empleado['password2']);
+        $this->modeloctrl->actualizarUsu($usuario,$id_usuario);
+      }
       unset ($empleado['id_empleado']);
-      //unset ($empleado['id_us']);
-      //unset ($empleado['password2']);
+      unset ($empleado['id_usuario']);
       unset ($empleado['submitGua']);
+      unset ($empleado['update_usuario']);
+
       $this->modeloctrl->actualizarBio($empleado,$id_empleado);
       echo '<script language="javascript">
       window.opener.document.location="verBio/UPDATE_OK"
@@ -165,11 +197,27 @@ class Sistemactrl extends CI_Controller {
   }
 
   public function eliminarBio(){
+    //print_r($this->input->post());    exit;
     $this->modeloctrl->eliminarBio($this->input->post('id_activo'));
     redirect('Sistemactrl/verBio/DELETE_OK','refresh');
   }
 
 #Funciones Biomedico
+
+public function nuevoArticulo(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $this->load->view('encabezado');
+    $this->load->view('Articulos/nuevoArticulo');
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function insertArticulo(){
+  echo "<pre>";
+  print_r($this->input->post());
+}
 
   public function inicioBio(){
     echo "inicio Biomedico";

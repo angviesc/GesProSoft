@@ -3,9 +3,9 @@
     <h4>Lista de Biomedicos</h4>
   </center>
   <div class="right-align">
-    <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo', $atts) ?>
-    <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarBio" id="test">Editar</a>
-    <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" >Eliminar</a>
+    <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
+    <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarBio" id="test">Editar<i class="material-icons right">edit</i></a>
+    <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
   </div>
   <table class="bordered highlight">
     <thead>
