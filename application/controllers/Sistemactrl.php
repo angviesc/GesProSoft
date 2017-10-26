@@ -10,7 +10,8 @@ class Sistemactrl extends CI_Controller {
                                 'Inventario' => array(
                                       'Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
                                       'Buscar articulo' => site_url('Sistemactrl/buscararticulo'),
-                                      'Ver inventario' => site_url('Sistemactrl/verInventario'),
+                                      'Ver Articulos' => site_url('Sistemactrl/verArticulos'),
+                                      'Ver inventario' => site_url('Sistemactrl/verInentario'),
                                       'divider',
                                       'Abrir lista de pedidos' => site_url('Sistemactrl/verPedidos'),
                                       'divider',
@@ -83,11 +84,13 @@ class Sistemactrl extends CI_Controller {
       if ($datos[0]['tipo'] == 1){
         $this->session->set_userdata('tipo',1);
         $this->session->set_userdata('usuario' , $datos[0]['nombre'].' '.$datos[0]['apellidop'].' '.$datos[0]['apellidom']);
-        $this->session->set_userdata( 'id' , $datos[0]['id']);
+        $this->session->set_userdata('user' , $datos[0]['usuario']);
+        $this->session->set_userdata('id' , $datos[0]['id']);
         redirect('Sistemactrl/inicioAdm','refresh');
       }else if ($datos[0]['tipo'] == 2){
         $this->session->set_userdata('tipo',2);
         $this->session->set_userdata('usuario' , $datos[0]['nombre'].' '.$datos[0]['apellidop'].' '.$datos[0]['apellidom']);
+        $this->session->set_userdata('user' , $datos[0]['usuario']);
         $this->session->set_userdata( 'id' , $datos[0]['id']);
         redirect('Sistemactrl/inicioBio','refresh');
       }
@@ -206,18 +209,114 @@ class Sistemactrl extends CI_Controller {
 
 public function nuevoArticulo(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $departamentos = $this->modeloctrl->selectDpto();
+    if ($departamentos == null) {
+      $data['selectDpto'] = '<option value="" disabled selected>Sin departamento registrado</option>';
+    }else{
+      $data['selectDpto'] = '<option value="" disabled selected>Elige un departamento</option>';
+      foreach ($departamentos as $departamento) {
+        $data['selectDpto'] .= '<option value="'.$departamento['id'].'">'.$departamento['nombre'].'</option>';
+      }
+      $data['selectDpto'] .= '<option value="-1">SIN DEPTO</option>';
+    }
+
     $this->load->view('encabezado');
-    $this->load->view('Articulos/nuevoArticulo');
+    $this->load->view('Articulos/nuevoArticulo',$data);
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
   }
 }
 
+public function consultaArea(){
+
+  $areas = $this->modeloctrl->consultaArea($this->input->post('idpto'));
+  if ($areas == null) {
+    $dropselect = '<select name="id_areas" disabled>';
+    $dropselect .= '<option value="" disabled selected>Sin areas registradas</option>';
+  }else{
+    $dropselect = '<select name="id_areas">';
+    $dropselect .= '<option value="" disabled selected>Selecciona un area</option>';
+    foreach ($areas as $area) {
+      $dropselect .= '<option value="'.$area['id'].'">'.$area['nombre'].'</option>';
+    }
+  }
+
+  $dropselect .= '</select><label >Area:</label>';
+  echo $dropselect;
+
+}
+
 public function insertArticulo(){
+
+  $articulo = $this->input->post();
+  //echo "<pre>";  print_r($articulo);  exit;
+  $articulo['descripcion'] = nl2br($articulo['descripcion']);
+  $articulo['nota'] = nl2br($articulo['nota']);
+  unset ($articulo['submitGua']);
+
+  if($this->input->post('equipo-unico')){
+    $art_unico = array('marca' =>$articulo['marca'] ,'modelo' => $articulo['modelo'], 'serie' =>$articulo['serie']);
+    unset ($articulo['equipo-unico']);
+    unset ($articulo['marca']);
+    unset ($articulo['modelo']);
+    unset ($articulo['serie']);
+    $this->modeloctrl->insertArtUnico($articulo,$art_unico);
+  }else{
+    $this->modeloctrl->insertArticulo($articulo);
+  }
+
+  echo '<script language="javascript">
+  window.opener.document.location="inicioAdm/INSERT_OK"
+  window.close();
+  </script>';
+
+}
+
+public function verArticulos(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $data['articulos'] = $this->modeloctrl->selectArt();
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    $this->load->view('Articulos/verArticulos',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function verInentario(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+    $data['inventario'] = $this->modeloctrl->selectStock();
+
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    //echo "<pre>";    print_r($data['inventario']);
+    $this->load->view('Inventario/verInventario',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+function test(){
   echo "<pre>";
   print_r($this->input->post());
 }
+
 
   public function inicioBio(){
     echo "inicio Biomedico";

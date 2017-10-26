@@ -1,6 +1,6 @@
 <div class="container">
   <center>
-    <h4>Lista de Biomedicos</h4>
+    <h4>Lista de Articulos</h4>
   </center>
   <div class="right-align">
     <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
@@ -11,19 +11,26 @@
     <thead>
       <tr>
         <th>NO.</th>
-        <th>Nombre</th>
-        <th>Usuario</th>
+        <th>Codigo</th>
+        <th>Articulo</th>
+        <th>Departamento</th>
+        <th>Ubicación</th>
+        <th>Cantidad</th>
       </tr>
     </thead>
     <tbody>
       <?php $x = 0;
-      foreach ($biomedicos as $biomedico) { ?>
+      foreach ($inventario as $articulo) { ?>
         <tr>
-          <?=form_hidden('id_us',$biomedico['id']) ?>
-          <?=form_hidden('id_tipo',$biomedico['tipo']) ?>
-          <td><?=++$x?></td>          
-          <td><?=$biomedico['nombre'].' '.$biomedico['apellidop'].' '.$biomedico['apellidom']?></td>
-          <td><?=$biomedico['usuario']?></td>
+          <!--
+          <?=form_hidden('id_us',$articulo['id']) ?>
+          -->
+          <td><?=++$x?></td>
+          <td><?=$articulo['codigo']?></td>
+          <td><?=$articulo['articulo']?></td>
+          <td></td>
+          <td><?=$articulo['almacen']?></td>
+          <td><?=$articulo['cantidad']?></td>
         </tr>
       <?php } ?>
     </tbody>

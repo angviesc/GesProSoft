@@ -1,3 +1,7 @@
 td.active-bio{
   background-color: #b0bec5;
 }
+
+.tabs .indicator {
+    background-color: #607d8b;
+}

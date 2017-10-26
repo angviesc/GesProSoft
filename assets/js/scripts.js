@@ -41,7 +41,7 @@ $('#ctrl-active').click(function(){
 $('tbody tr').on('click',function (){
   $('td').removeClass( "active-bio" );
   $('a').removeClass(' disabled');
-  if ($(this).children('input').val() == 1){
+  if ($(this).children('input[name=id_tipo]').val() == 1){
     $('#eliminarBio').addClass('disabled');
   }
 
@@ -51,8 +51,26 @@ $('tbody tr').on('click',function (){
   $('#id_activo').val($(this).children('input').val());
 });
 
+$('#id_departamento').change(function(){
+  var idpto = $('#id_departamento').val();
+  var php = $('#site_url').val()+'/Sistemactrl/consultaArea/'+idpto;
+  $.post( php, {idpto : idpto},
+    function(data){
+      $("#select-area").html(data);
+      $('select').material_select();
+    }
+  );
+
+
+  /*
+  alert();
+  */
+});
+
 
 
 //Inizializando elementos
 $('.modal').modal();
 $('.button-collapse').sideNav();
+$('select').material_select();
+$('ul.tabs').tabs();
