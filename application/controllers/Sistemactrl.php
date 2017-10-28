@@ -20,11 +20,11 @@ class Sistemactrl extends CI_Controller {
                                       'Pedir stock' => site_url('Sistemactrl/verBio'),
                                       'Transferir stock' => site_url('Sistemactrl/verBio')),
                                 'Departamentos' => array(
-                                      'Departamento nuevo' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm')),
-                                      'Ver lista de departamentos' => site_url('Sistemactrl/verBio')),
+                                      'Nuevo Departamento' => array( 'popUp' => site_url('Sistemactrl/nuevoDpto')),
+                                      'Ver lista de departamentos' => site_url('Sistemactrl/verDpto')),
                                 'Almacenes' => array(
                                       'Nuevo almacen' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm')),
-                                      'Ver Almacenes' => site_url('Sistemactrl/verBio')),
+                                      'Ver Almacenes' => site_url('Sistemactrl/verAlm')),
                                 'Proveedores' => array(
                                       'Nuevo proveedor' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
                                       'Ver proveedores' => site_url('Sistemactrl/verBio')),
@@ -233,10 +233,10 @@ public function consultaArea(){
 
   $areas = $this->modeloctrl->consultaArea($this->input->post('idpto'));
   if ($areas == null) {
-    $dropselect = '<select name="id_areas" disabled>';
+    $dropselect = '<select name="id_area" disabled>';
     $dropselect .= '<option value="" disabled selected>Sin areas registradas</option>';
   }else{
-    $dropselect = '<select name="id_areas">';
+    $dropselect = '<select name="id_area">';
     $dropselect .= '<option value="" disabled selected>Selecciona un area</option>';
     foreach ($areas as $area) {
       $dropselect .= '<option value="'.$area['id'].'">'.$area['nombre'].'</option>';
@@ -251,7 +251,7 @@ public function consultaArea(){
 public function insertArticulo(){
 
   $articulo = $this->input->post();
-  //echo "<pre>";  print_r($articulo);  exit;
+
   $articulo['descripcion'] = nl2br($articulo['descripcion']);
   $articulo['nota'] = nl2br($articulo['nota']);
   unset ($articulo['submitGua']);
@@ -268,7 +268,7 @@ public function insertArticulo(){
   }
 
   echo '<script language="javascript">
-  window.opener.document.location="inicioAdm/INSERT_OK"
+  window.opener.document.location="verArticulos/INSERT_OK"
   window.close();
   </script>';
 
@@ -306,6 +306,98 @@ public function verInentario(){
     echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
     //echo "<pre>";    print_r($data['inventario']);
     $this->load->view('Inventario/verInventario',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function nuevoAlm(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $this->load->view('encabezado');
+    $this->load->view('Almacenes/nuevoAlm');
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function insertarAlm(){
+  $almacen = $this->input->post();
+  $almacen['ubicacion'] = nl2br($almacen['ubicacion']);
+  unset ($almacen['submitGua']);
+
+  $this->modeloctrl->insertAlm($almacen);
+  echo '<script language="javascript">
+  window.opener.document.location="verAlm/INSERT_OK"
+  window.close();
+  </script>';
+}
+
+public function verAlm(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+    $data['almacenes'] = $this->modeloctrl->selectAlm();
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    $this->load->view('Almacenes/verAlmacenes',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function nuevoDpto(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $this->load->view('encabezado');
+    $this->load->view('Departamentos/nuevoDpto');
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function insertarDpto(){
+
+  $dpto  = array('nombre' => $this->input->post('nombre') );
+  $areas = $this->input->post('areas');
+
+  $this->modeloctrl->insertDpto($dpto, $areas);
+  echo '<script language="javascript">
+  window.opener.document.location="verDpto/INSERT_OK"
+  window.close();
+  </script>';
+}
+
+public function verDpto(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $data['departamentos'] = $this->modeloctrl->selectDpto();
+    $areas = $this->modeloctrl->selectAreas();
+    $dptoxarea = array();
+
+    foreach ($areas as $area) {
+      if (isset($dptoxarea[$area['id_departamento']]))
+      $dptoxarea[$area['id_departamento']] .= ', '.$area['nombre'];
+      else
+      $dptoxarea[$area['id_departamento']] = $area['nombre'];
+    }
+
+    $data['areas'] = $dptoxarea;
+
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    $this->load->view('Departamentos/verDptos',$data);
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');

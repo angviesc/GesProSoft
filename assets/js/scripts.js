@@ -60,13 +60,23 @@ $('#id_departamento').change(function(){
       $('select').material_select();
     }
   );
-
-
-  /*
-  alert();
-  */
 });
 
+$('#addArea').click(function(){
+  //alert($('#tabla-dinamica tbody tr').eq(0).html());
+  if ($('.input-tabla').length == $('#tabla-dinamica tbody tr').length) {
+    //alert($('#tabla-dinamica tbody').html());
+
+    $('#tabla-dinamica tbody ').append('<tr><td class="reglon-editable">'+
+    '<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">'+
+    '</td></tr>');
+  }else {
+    $('#tabla-dinamica tbody tr td').eq($('.input-tabla').length).append('<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">');
+  }
+  //alert($('#tabla-dinamica tbody tr').length);
+
+  //$('#tabla-dinamica').eq(0).append( "<b>Test</b>" );
+});
 
 
 //Inizializando elementos

@@ -68,10 +68,7 @@ class Modeloctrl extends CI_Model{
 		$this->db->update('usuarios');
 
 	}
-	function selectDpto(){
-		$res = $this->db->get('departamentos');
-		return json_decode(json_encode($res->result()), True);
-	}
+
 
 	function consultaArea($id){
 		$this->db->where('id_departamento', $id);
@@ -89,15 +86,12 @@ class Modeloctrl extends CI_Model{
 			'accion' => 'Alta',
 			'tabla' => 'articulos');
 			$bitacora['registro'] = $id[0]->id;
-			$this->db->set($bitacora);
-			$this->db->insert('bitacora');
+			$this->insertBitacora($bitacora);
 		}
 
 	}
 
 	function insertArtUnico($articulo, $articuloU){
-		print_r($this->session->userdata());
-		exit;
 		$this->db->set($articulo);
 		$this->db->insert('articulos');
 		$id = $this->db->query('SELECT @@identity AS id');
@@ -110,14 +104,14 @@ class Modeloctrl extends CI_Model{
 			'accion' => 'Alta',
 			'tabla' => 'articulo_unico');
 			$bitacora['registro'] = $id[0]->id;
-			$this->db->set($bitacora);
-			$this->db->insert('bitacora');
+			$this->insertBitacora($bitacora);
 		}
 	}
 
 	function insertBitacora($bitacora){
-		$this->db->set($bitacora);
-		$this->db->insert('bitacora');
+		 $bitacora['dispositivo'] = ($this->agent->is_mobile())? "Movil" : "Escritorio";
+		 $this->db->set($bitacora);
+		 $this->db->insert('bitacora');
 	}
 
 	function selectArt(){
@@ -140,5 +134,82 @@ class Modeloctrl extends CI_Model{
 
 		return json_decode(json_encode($res->result()), True);
 	}
+
+	function insertAlm($almacen){
+		$this->db->set($almacen);
+		$this->db->insert('almacenes');
+		$id = $this->db->query('SELECT @@identity AS id');
+
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Alta',
+			'tabla' => 'almacenes',
+			'registro' => $id[0]->id);
+
+			$this->insertBitacora($bitacora);
+		}
+	}
+
+	function insertDpto($dpto, $areas){
+		$this->db->set($dpto);
+		$this->db->insert('departamentos');
+		$id = $this->db->query('SELECT @@identity AS id');
+
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Alta',
+			'tabla' => 'departamentos',
+			'registro' => $id[0]->id);
+			$this->insertBitacora($bitacora);
+
+			if (!empty($areas)){
+				foreach ($areas as $area) {
+					if (!empty($area)){
+						$insert = array('nombre' => $area,'id_departamento' => $id[0]->id );
+						$this->db->set($insert);
+						$this->db->insert('areas');
+						$id_area = $this->db->query('SELECT @@identity AS id');
+
+						if ($id_area->num_rows() == 1 ){
+							$id_area = $id_area->result();
+							$bitacora = array('usuario' => $this->session->userdata('user'),
+							'accion' => 'Alta',
+							'tabla' => 'areas',
+							'registro' => $id_area[0]->id);
+							$this->insertBitacora($bitacora);
+						}
+					}
+				}
+			}
+		}
+
+	}
+	function selectDpto(){
+		$res = $this->db->get('departamentos');
+		return json_decode(json_encode($res->result()), True);
+	}
+
+	function selectAreas(){
+		$this->db->order_by('id_departamento');
+		$res = $this->db->get('areas');
+		return json_decode(json_encode($res->result()), True);
+	}
+/*
+
+	function selectDpto(){
+	$this->db->select('d.nombre as departamento, a.* ');
+	$this->db->join('areas a', 'd.id = a.id_departamento', 'left');
+	$res = $this->db->get('departamentos d');
+	return json_decode(json_encode($res->result()), True);
+}
+*/
+	function selectAlm(){
+		$res = $this->db->get('areas');
+		return json_decode(json_encode($res->result()), True);
+	}
+
+
 
 }

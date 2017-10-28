@@ -5,3 +5,13 @@ td.active-bio{
 .tabs .indicator {
     background-color: #607d8b;
 }
+
+td.reglon-editable{
+  padding:15px 5px
+
+}
+
+td > input.input-tabla{
+  margin: 0 0 10px 0;
+  background-color: yellow;
+}

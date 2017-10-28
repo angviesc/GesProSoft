@@ -9,6 +9,7 @@ VALUES ('Admin',md5('pass'), 1, 1);
 //Debería ir
 ALTER TABLE clientes ADD correo VARCHAR(40) NOT NULL AFTER activo;
 
+ALTER TABLE `bitacora` ADD `dispositivo` VARCHAR(30) NOT NULL AFTER `accion`;
+
 /*ALTER TABLE clientes ADD direnvio VARCHAR(50) NOT NULL AFTER correo;
 ALTER TABLE clientes ADD correo VARCHAR(40) NOT NULL AFTER activo;*/
-
