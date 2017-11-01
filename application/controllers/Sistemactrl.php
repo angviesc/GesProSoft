@@ -9,16 +9,16 @@ class Sistemactrl extends CI_Controller {
     $this->arr_MenAdmin = array('Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
                                 'Inventario' => array(
                                       'Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
-                                      'Buscar articulo' => site_url('Sistemactrl/buscararticulo'),
+                                      'Buscar articulo' => site_url('Sistemactrl/SinFuncion'),
                                       'Ver Articulos' => site_url('Sistemactrl/verArticulos'),
                                       'Ver inventario' => site_url('Sistemactrl/verInentario'),
                                       'divider',
-                                      'Abrir lista de pedidos' => site_url('Sistemactrl/verPedidos'),
+                                      'Abrir lista de pedidos' => site_url('Sistemactrl/SinFuncion'),
                                       'divider',
-                                      'Vender stock' => site_url('Sistemactrl/venderStock'),
-                                      'Recibir stock' => site_url('Sistemactrl/verBio'),
-                                      'Pedir stock' => site_url('Sistemactrl/verBio'),
-                                      'Transferir stock' => site_url('Sistemactrl/verBio')),
+                                      'Vender stock' => site_url('Sistemactrl/SinFuncion'),
+                                      'Recibir stock' => site_url('Sistemactrl/SinFuncion'),
+                                      'Pedir stock' => site_url('Sistemactrl/SinFuncion'),
+                                      'Transferir stock' => site_url('Sistemactrl/SinFuncion')),
                                 'Departamentos' => array(
                                       'Nuevo Departamento' => array( 'popUp' => site_url('Sistemactrl/nuevoDpto')),
                                       'Ver lista de departamentos' => site_url('Sistemactrl/verDpto')),
@@ -26,17 +26,17 @@ class Sistemactrl extends CI_Controller {
                                       'Nuevo almacen' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm')),
                                       'Ver Almacenes' => site_url('Sistemactrl/verAlm')),
                                 'Proveedores' => array(
-                                      'Nuevo proveedor' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
-                                      'Ver proveedores' => site_url('Sistemactrl/verBio')),
+                                      'Nuevo proveedor' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
+                                      'Ver proveedores' => site_url('Sistemactrl/SinFuncion')),
                                 'Clientes' => array(
-                                      'Nuevo cliente' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
-                                      'Ver clientes' => site_url('Sistemactrl/verBio')),
+                                      'Nuevo cliente' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
+                                      'Ver clientes' => site_url('Sistemactrl/SinFuncion')),
                                 'Administrar Biomédicos' => array(
                                       'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
                                       'Ver Biomedicos' => site_url('Sistemactrl/verBio')),
                                 'Informes' => array(
-                                      'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
-                                      'Ver Biomedicos' => site_url('Sistemactrl/verBio')),
+                                      'PENDIENTE' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
+                                      'PENDIENTE-' => site_url('Sistemactrl/SinFuncion')),
 								                'Cerrar sesion' => site_url('Sistemactrl/cerrar_sesion'));
 
 

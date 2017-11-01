@@ -39,8 +39,11 @@ $('#ctrl-active').click(function(){
 });
 
 $('tbody tr').on('click',function (){
+  //alert()
+
   $('td').removeClass( "active-bio" );
   $('a').removeClass(' disabled');
+
   if ($(this).children('input[name=id_tipo]').val() == 1){
     $('#eliminarBio').addClass('disabled');
   }
@@ -48,7 +51,8 @@ $('tbody tr').on('click',function (){
   $(this).children('td').addClass( "active-bio" );
   //$('#jump').attr('href','2');
   //alert($('#jump').attr('onclick'));
-  $('#id_activo').val($(this).children('input').val());
+  //$('#id_activo').val($(this).children('input').val());
+
 });
 
 $('#id_departamento').change(function(){
@@ -76,6 +80,13 @@ $('#addArea').click(function(){
   //alert($('#tabla-dinamica tbody tr').length);
 
   //$('#tabla-dinamica').eq(0).append( "<b>Test</b>" );
+});
+
+$('#btn-elinar-area').click(function(){
+  $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
+  $('#viewhtml').val($('#tabla-dinamica tbody').html());
+
+   //alert($('#tabla-dinamica tbody tr .active-bio').parent('tr').index());
 });
 
 

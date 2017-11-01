@@ -55,20 +55,33 @@ class Modeloctrl extends CI_Model{
 	function actualizarBio($empleado,$id){
 		$this->db->where('id',$id);
 		$this->db->update('empleados',$empleado);
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Actualizar',
+		'tabla' => 'empleados');
+		$bitacora['registro'] = $id;
+		$this->insertBitacora($bitacora);
 	}
 
 	function actualizarUsu($usuario,$id){
 		$this->db->where('id',$id);
 		$this->db->update('usuarios',$usuario);
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Actualizar',
+		'tabla' => 'usuarios');
+		$bitacora['registro'] = $id;
+		$this->insertBitacora($bitacora);
 	}
 
 	function eliminarBio($id){
 		$this->db->set('activo',0);
 		$this->db->where('id',$id);
 		$this->db->update('usuarios');
-
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Eliminar',
+		'tabla' => 'usuarios');
+		$bitacora['registro'] = $id;
+		$this->insertBitacora($bitacora);
 	}
-
 
 	function consultaArea($id){
 		$this->db->where('id_departamento', $id);

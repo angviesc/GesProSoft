@@ -5,6 +5,7 @@
     <input type="text" name="nombre" id="nombre" required>
     <label for="nombre">Nombre:</label>
   </div>
+  <textarea name="name" id="viewhtml" rows="8" cols="80"></textarea>
   <h5>Areas</h5>
   <table class="bordered highlight" id="tabla-dinamica">
     <thead>
@@ -36,8 +37,7 @@
     <tfoot>
       <td class="right-align">
         <button type="button" class="waves-effect waves-light btn blue-grey darken-3" name="addArea" id="addArea">Añadir<i class="material-icons right">add</i></button>
-        <button type="button" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarBio" id="test">Editar<i class="material-icons right">edit</i></button>
-        <button type="button" class="waves-effect waves-light btn blue-grey darken-3 disabled">Eliminar<i class="material-icons right">delete</i></button>
+        <a class="waves-effect waves-light btn blue-grey darken-3 disabled" name="btn-elinar-area" id="btn-elinar-area">Eliminar<i class="material-icons right">delete</i></a>
       </td>
     </tfoot>
   </table>
