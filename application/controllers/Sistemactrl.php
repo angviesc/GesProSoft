@@ -6,9 +6,9 @@ class Sistemactrl extends CI_Controller {
   function __construct(){
     parent::__construct();
 
-    $this->arr_MenAdmin = array('Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
+    $this->arr_MenAdmin = array('Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo/1')),
                                 'Inventario' => array(
-                                      'Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo')),
+                                      'Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo/1')),
                                       'Buscar articulo' => site_url('Sistemactrl/SinFuncion'),
                                       'Ver Articulos' => site_url('Sistemactrl/verArticulos'),
                                       'Ver inventario' => site_url('Sistemactrl/verInentario'),
@@ -20,10 +20,10 @@ class Sistemactrl extends CI_Controller {
                                       'Pedir stock' => site_url('Sistemactrl/SinFuncion'),
                                       'Transferir stock' => site_url('Sistemactrl/SinFuncion')),
                                 'Departamentos' => array(
-                                      'Nuevo Departamento' => array( 'popUp' => site_url('Sistemactrl/nuevoDpto')),
+                                      'Nuevo Departamento' => array( 'popUp' => site_url('Sistemactrl/nuevoDpto/1')),
                                       'Ver lista de departamentos' => site_url('Sistemactrl/verDpto')),
                                 'Almacenes' => array(
-                                      'Nuevo almacen' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm')),
+                                      'Nuevo almacen' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm/1')),
                                       'Ver Almacenes' => site_url('Sistemactrl/verAlm')),
                                 'Proveedores' => array(
                                       'Nuevo proveedor' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
@@ -32,7 +32,7 @@ class Sistemactrl extends CI_Controller {
                                       'Nuevo cliente' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
                                       'Ver clientes' => site_url('Sistemactrl/SinFuncion')),
                                 'Administrar Biomédicos' => array(
-                                      'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio')),
+                                      'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio/1')),
                                       'Ver Biomedicos' => site_url('Sistemactrl/verBio')),
                                 'Informes' => array(
                                       'PENDIENTE' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
@@ -41,7 +41,7 @@ class Sistemactrl extends CI_Controller {
 
 
 
-    $this->arr_MenAcademico = array('Nueva solicitud de viáticos' => site_url('Sistemactrl/nuevo_viaje'),
+    $this->arr_MenAcademico = array('Nueva solicitud de viáticos' => site_url('Sistemactrl/nuevo_viaje/1'),
     															'Mis solicitudes de viáticos' => site_url('Sistemactrl/mis_viajes'),
                               'Sistema' => array('EVENTOS ACADÉMICOS' => site_url('Sistemactrl/inicio_usuario'), 'Cerrar sesion' => site_url('Sistemactrl/cerrar_sesion') ));
 
@@ -117,8 +117,9 @@ class Sistemactrl extends CI_Controller {
 
   public function nuevoBio(){
     if ($this->session->userdata('tipo') == 1){
+      $data['sed'] = array('sed' => $this->uri->segment(3));
       $this->load->view('encabezado');
-      $this->load->view('GestionBio/nuevoBio');
+      $this->load->view('GestionBio/nuevoBio',$data);
       $this->load->view('pie');
     }else{
       redirect('Sistemactrl/acceso','refresh');
@@ -136,10 +137,17 @@ class Sistemactrl extends CI_Controller {
       unset ($empleado['password2']);
       unset ($empleado['submitGua']);
       $this->modeloctrl->insertarBio($empleado,$usuario);
-      echo '<script language="javascript">
-			window.opener.document.location="verBio/INSERT_OK"
-			window.close();
-			</script>';
+
+      if ($this->input->post('sed')){
+        echo '<script language="javascript">
+        window.close();
+        </script>';
+      }else {
+        echo '<script language="javascript">
+        window.opener.document.location="verBio/INSERT_OK"
+        window.close();
+        </script>';
+      }
     }
   }
 
@@ -209,7 +217,7 @@ class Sistemactrl extends CI_Controller {
 
 public function nuevoArticulo(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
-
+    $data['sed'] = array('sed' => $this->uri->segment(3));
     $departamentos = $this->modeloctrl->selectDpto();
     if ($departamentos == null) {
       $data['selectDpto'] = '<option value="" disabled selected>Sin departamento registrado</option>';
@@ -241,6 +249,7 @@ public function consultaArea(){
     foreach ($areas as $area) {
       $dropselect .= '<option value="'.$area['id'].'">'.$area['nombre'].'</option>';
     }
+    $dropselect .= '<option value="-1">SIN AREA</option>';
   }
 
   $dropselect .= '</select><label >Area:</label>';
@@ -314,8 +323,9 @@ public function verInentario(){
 
 public function nuevoAlm(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
     $this->load->view('encabezado');
-    $this->load->view('Almacenes/nuevoAlm');
+    $this->load->view('Almacenes/nuevoAlm',$data);
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
@@ -353,9 +363,9 @@ public function verAlm(){
 
 public function nuevoDpto(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
-
+    $data['sed'] = array('sed' => $this->uri->segment(3));
     $this->load->view('encabezado');
-    $this->load->view('Departamentos/nuevoDpto');
+    $this->load->view('Departamentos/nuevoDpto',$data);
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
@@ -363,17 +373,21 @@ public function nuevoDpto(){
 }
 
 public function insertarDpto(){
-
   $dpto  = array('nombre' => $this->input->post('nombre') );
   $areas = $this->input->post('areas');
 
   $this->modeloctrl->insertDpto($dpto, $areas);
-  echo '<script language="javascript">
-  window.opener.document.location="verDpto/INSERT_OK"
-  window.close();
-  </script>';
+  if ($this->input->post('sed')){
+    echo '<script language="javascript">
+    window.close();
+    </script>';
+  }else {
+    echo '<script language="javascript">
+    window.opener.document.location="verDpto/INSERT_OK"
+    window.close();
+    </script>';
+  }
 }
-
 public function verDpto(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
     $data['atts'] = array( 'width' => 800, 'height' => 700,
@@ -404,6 +418,30 @@ public function verDpto(){
   }
 }
 
+public function editarDpto(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+
+    $data['departamentos'] = $this->modeloctrl->consultaDpto($this->uri->segment(3));
+
+    $this->load->view('encabezado');
+    $this->load->view('Departamentos/editarDpto',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function actualizarDpto(){
+  echo "<pre>";
+  print_r($this->input->post());
+  exit;
+}
 function test(){
   echo "<pre>";
   print_r($this->input->post());

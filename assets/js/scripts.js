@@ -38,7 +38,7 @@ $('#ctrl-active').click(function(){
   }
 });
 
-$('tbody tr').on('click',function (){
+$('tbody').on('click','tr',function (){
   //alert()
 
   $('td').removeClass( "active-bio" );
@@ -51,8 +51,7 @@ $('tbody tr').on('click',function (){
   $(this).children('td').addClass( "active-bio" );
   //$('#jump').attr('href','2');
   //alert($('#jump').attr('onclick'));
-  //$('#id_activo').val($(this).children('input').val());
-
+  $('#id_activo').val($(this).children('input').val());
 });
 
 $('#id_departamento').change(function(){
@@ -67,26 +66,30 @@ $('#id_departamento').change(function(){
 });
 
 $('#addArea').click(function(){
-  //alert($('#tabla-dinamica tbody tr').eq(0).html());
-  if ($('.input-tabla').length == $('#tabla-dinamica tbody tr').length) {
-    //alert($('#tabla-dinamica tbody').html());
 
-    $('#tabla-dinamica tbody ').append('<tr><td class="reglon-editable">'+
-    '<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">'+
-    '</td></tr>');
-  }else {
-    $('#tabla-dinamica tbody tr td').eq($('.input-tabla').length).append('<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">');
+  if ($(this).attr('name') == 'addArea') {
+    if ($('.input-tabla').length == $('#tabla-dinamica tbody tr').length) {
+      $('#tabla-dinamica tbody ').append('<tr><td class="reglon-editable">'+
+      '<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">'+
+      '</td></tr>');
+    }else {
+      $('#tabla-dinamica tbody tr td').eq($('.input-tabla').length).append('<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">');
+    }
+  }else{
+    if ($('.h').length > 0){
+
+    }else {
+
+    }
+    alert($('.h').length)
+    //alert($('#tabla-dinamica tbody tr').length)
   }
-  //alert($('#tabla-dinamica tbody tr').length);
 
-  //$('#tabla-dinamica').eq(0).append( "<b>Test</b>" );
 });
 
 $('#btn-elinar-area').click(function(){
   $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
   $('#viewhtml').val($('#tabla-dinamica tbody').html());
-
-   //alert($('#tabla-dinamica tbody tr .active-bio').parent('tr').index());
 });
 
 

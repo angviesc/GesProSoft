@@ -1,11 +1,10 @@
 <div class="container">
-  <?= form_open('Sistemactrl/insertarDpto')?>
+  <?= form_open('Sistemactrl/insertarDpto','',$sed)?>
   <h4>Nuevo Departamento</h4>
   <div class="input-field">
     <input type="text" name="nombre" id="nombre" required>
     <label for="nombre">Nombre:</label>
   </div>
-  <textarea name="name" id="viewhtml" rows="8" cols="80"></textarea>
   <h5>Areas</h5>
   <table class="bordered highlight" id="tabla-dinamica">
     <thead>
@@ -20,9 +19,7 @@
         </td>
       </tr>
       <tr>
-        <td class="reglon-editable">
-
-        </td>
+        <td class="reglon-editable"></td>
       </tr>
       <tr>
         <td class="reglon-editable"></td>

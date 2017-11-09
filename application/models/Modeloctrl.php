@@ -199,10 +199,22 @@ class Modeloctrl extends CI_Model{
 		}
 
 	}
+
 	function selectDpto(){
 		$res = $this->db->get('departamentos');
 		return json_decode(json_encode($res->result()), True);
 	}
+
+	function consultaDpto($id){
+		$this->db->select('d.id AS id_dpto, d.nombre as nombre_dpto, a.id as id_area, a.nombre as nombre_area ');
+		$this->db->from('departamentos d');
+		$this->db->where('d.id', $id);
+		$this->db->join('areas a', 'd.id = a.id_departamento','left');
+		$res = $this->db->get();
+		return json_decode(json_encode($res->result()), True);
+	}
+
+
 
 	function selectAreas(){
 		$this->db->order_by('id_departamento');
