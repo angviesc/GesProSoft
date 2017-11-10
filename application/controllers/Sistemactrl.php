@@ -218,6 +218,7 @@ class Sistemactrl extends CI_Controller {
 public function nuevoArticulo(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
     $data['sed'] = array('sed' => $this->uri->segment(3));
+
     $departamentos = $this->modeloctrl->selectDpto();
     if ($departamentos == null) {
       $data['selectDpto'] = '<option value="" disabled selected>Sin departamento registrado</option>';
@@ -229,11 +230,68 @@ public function nuevoArticulo(){
       $data['selectDpto'] .= '<option value="-1">SIN DEPTO</option>';
     }
 
+    $proveedores = $this->modeloctrl->selectProv();
+    if ($proveedores == null) {
+      $data['selectProv'] = '<option value="" disabled selected>Sin Proveedores registrados</option>';
+    }else{
+      $data['selectProv'] = '<option value="" disabled selected>Elige un proveedor</option>';
+      foreach ($proveedores as $proveedor) {
+        $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
+      }
+      $data['selectProv'] .= '<option value="-1">EQUIPO PROPIO</option>';
+    }
+
+    $almacenes = $this->modeloctrl->selectAlm();
+    if ($almacenes == null) {
+      $data['selectAlm'] = '<option value="" disabled selected>Sin Almacenes registrados</option>';
+    }else{
+      $data['selectAlm'] = '<option value="" disabled selected>Selecciona un almacen</option>';
+      foreach ($almacenes as $almacen) {
+        $data['selectAlm'] .= '<option value="'.$almacen['id'].'">'.$almacen['nombre'].'</option>';
+      }
+
+    }
+
+
     $this->load->view('encabezado');
     $this->load->view('Articulos/nuevoArticulo',$data);
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function insertArticulo(){
+echo "<pre>";
+print_r($this->input->post());
+exit;
+  $articulo = $this->input->post();
+
+  $articulo['descripcion'] = nl2br($articulo['descripcion']);
+  $articulo['nota'] = nl2br($articulo['nota']);
+  unset ($articulo['submitGua']);
+
+  if($this->input->post('equipo-unico')){
+    $art_unico = array('marca' =>$articulo['marca'] ,'modelo' => $articulo['modelo'], 'serie' =>$articulo['serie'], 'fecha_instalacion' => $articulo['fecha_instalacion_submit']);
+    unset ($articulo['equipo-unico']);
+    unset ($articulo['marca']);
+    unset ($articulo['modelo']);
+    unset ($articulo['serie']);
+    unset ($articulo['fecha_instalacion_submit']);
+    $this->modeloctrl->insertArtUnico($articulo,$art_unico);
+  }else{
+    $this->modeloctrl->insertArticulo($articulo);
+  }
+
+  if ($this->input->post('sed')){
+    echo '<script language="javascript">
+    window.close();
+    </script>';
+  }else {
+    echo '<script language="javascript">
+    window.opener.document.location="verArticulos/INSERT_OK"
+    window.close();
+    </script>';
   }
 }
 
@@ -257,31 +315,7 @@ public function consultaArea(){
 
 }
 
-public function insertArticulo(){
 
-  $articulo = $this->input->post();
-
-  $articulo['descripcion'] = nl2br($articulo['descripcion']);
-  $articulo['nota'] = nl2br($articulo['nota']);
-  unset ($articulo['submitGua']);
-
-  if($this->input->post('equipo-unico')){
-    $art_unico = array('marca' =>$articulo['marca'] ,'modelo' => $articulo['modelo'], 'serie' =>$articulo['serie']);
-    unset ($articulo['equipo-unico']);
-    unset ($articulo['marca']);
-    unset ($articulo['modelo']);
-    unset ($articulo['serie']);
-    $this->modeloctrl->insertArtUnico($articulo,$art_unico);
-  }else{
-    $this->modeloctrl->insertArticulo($articulo);
-  }
-
-  echo '<script language="javascript">
-  window.opener.document.location="verArticulos/INSERT_OK"
-  window.close();
-  </script>';
-
-}
 
 public function verArticulos(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
@@ -361,6 +395,44 @@ public function verAlm(){
   }
 }
 
+public function editarAlm(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+
+    $data['almacen'] = $this->modeloctrl->consultAlm($this->uri->segment(3));
+
+    $this->load->view('encabezado');
+    $this->load->view('Almacenes/editarAlm',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function actualizarAlm(){
+  $almacen = $this->input->post();
+  unset ($almacen['submitGua']);
+  $almacen['ubicacion'] = nl2br($almacen['ubicacion']);
+
+  $this->modeloctrl->actualizarAlm($almacen);
+
+  echo '<script language="javascript">
+  window.opener.document.location="verAlm/UPDATE_OK"
+  window.close();
+  </script>';
+}
+
+public function eliminarAlm(){
+  //print_r($this->input->post('id_activo'));
+  $this->modeloctrl->eliminarAlm($this->input->post('id_activo'));
+  redirect('Sistemactrl/verAlm/DELETE_OK','refresh');
+}
+
 public function nuevoDpto(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
     $data['sed'] = array('sed' => $this->uri->segment(3));
@@ -438,10 +510,28 @@ public function editarDpto(){
 }
 
 public function actualizarDpto(){
-  echo "<pre>";
-  print_r($this->input->post());
-  exit;
+
+  $departamento = array('id' => $this->input->post('id_departamento'), 'nombre' => $this->input->post('nombre'));
+  $areas_editadas = array('ids' => $this->input->post('id_area_edit'), 'nombre' => $this->input->post('area_editada'));
+  $areas_eliminadas = array('ids' => $this->input->post('id_area_delete'));
+  $areas_nuevas = array('id' => $this->input->post('id_departamento'), 'nombres' => $this->input->post('areas'));
+
+  $this->modeloctrl->actualizarDpto($departamento);
+  $this->modeloctrl->actualizarAreas($areas_editadas);
+  $this->modeloctrl->eliminarAreas($areas_eliminadas);
+  $this->modeloctrl->insertarAreas($areas_nuevas);
+
+  echo '<script language="javascript">
+  window.opener.document.location="verDpto/UPDATE_OK"
+  window.close();
+  </script>';
 }
+
+public function eliminarDpto(){
+  $this->modeloctrl->eliminarDpto($this->input->post('id_activo'));
+  redirect('Sistemactrl/verDpto/DELETE_OK','refresh');
+}
+
 function test(){
   echo "<pre>";
   print_r($this->input->post());

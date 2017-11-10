@@ -33,7 +33,7 @@
 
   <!-- Modal Structure -->
   <div id="modal1" class="modal">
-    <?= form_open('Sistemactrl/')?>
+    <?= form_open('Sistemactrl/eliminarDpto')?>
     <div class="modal-content">
       <h4>Confirmacion</h4>
       <p>¿Esta seguro que desea eliminar al biomedico seleccionado?</p>

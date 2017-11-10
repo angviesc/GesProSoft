@@ -4,13 +4,13 @@
 
     <div class="col s12 ">
       <ul class="tabs ">
-        <li class="tab col s3 "><a class="active blue-grey-text" href="#test1">Articulo</a></li>
-        <li class="tab col s3"><a class="blue-grey-text" href="#test2">Inventario</a></li>
+        <li class="tab col s3 "><a class="active blue-grey-text" href="#Sarticulo">Articulo</a></li>
+        <li class="tab col s3"><a class="blue-grey-text" href="#Sinventario">Inventario</a></li>
         <li class="tab col s6"></li>
       </ul>
     </div>
 
-    <div id="test1" class="col s12 ">
+    <div id="Sarticulo" class="col s12 ">
       <h4>Nuevo Artículo</h4>
       <div class="input-field">
         <input type="text" name="codigo" id="codigo" required>
@@ -36,7 +36,7 @@
 
       <div class="input-field" id="select-area">
         <select disabled>
-          <option value="" disabled selected>Selecciona un departamento</option>
+          <option value="" disabled selected>Selecciona un área</option>
         </select>
         <label >Area:</label>
       </div>
@@ -80,42 +80,63 @@
         <input type="text" disabled class="bloqueado" name="serie" id="serie" required>
         <label for="serie">Serie</label>
       </div>
+
+      <div class="input-field">
+        <input type="text" disabled class="datepicker bloqueado" name="fecha_instalacion" id="fecha_instalacion" required>
+        <label for="fecha_instalacion">Fecha de instalacion</label>
+      </div>
+
     </div>
 
 
-    <div id="test2" class="col s12">
-
+    <div id="Sinventario" class="col s12">
         <h4>Inventario</h4>
-
-
       <div class="input-field">
-        <table>
+        <table class="bordered highlight" id="tabla-dinamica">
           <thead>
             <tr>
-              <th>Ubicación</th>
-              <th>Cantidad</th>
+              <th width="80%">Ubicación</th>
+              <th width="20%">Cantidad</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="tb_inventario">
             <tr>
-              <td>o</td>
-              <td>k</td>
+              <td>
+                <div class="input-field">
+                  <select name="id_almacen[]">
+                    <?=$selectAlm?>
+                  </select>
+                  <label>Proveedores:</label>
+                </div>
+              </td>
+              <td><input type="number" class="contador_inv" name="cantidad[]" value="" min=0></td>
             </tr>
           </tbody>
           <tfoot>
-            <tr >
-              <td colspan="2" class="right-align"><button type="button" name="button">TEXT</button></td>
+            <tr>
+              <th align="left">Piezas totales</th>
+              <th id="totalPzas"></th>
+            </tr>
+            <tr>
+              <td colspan="2" class="right-align">
+                <button type="button" class="waves-effect waves-light btn blue-grey darken-3" name="btn-add-inv" id="btn-add-inv">Añadir<i class="material-icons right">add</i></button>
+                <a href="#" class="waves-effect waves-light btn blue-grey darken-3 disabled delete-renglon" name="btn-delete-area" id="btn-delete-inv">Eliminar<i class="material-icons right">delete</i></a>
+              </td>
             </tr>
           </tfoot>
         </table>
       </div>
 
       <div class="input-field">
-        <input type="text" name="nombre" id="nombre" >
+        <select id="id_proveedor" name="id_proveedor[]">
+          <?=$selectProv?>
+        </select>
         <label for="nombre">Proveedor:</label>
       </div>
 
     </div>
+
+    <input type="hidden" id="almacenesSelect" value='<?=$selectAlm?>'>
 
   </div>
 

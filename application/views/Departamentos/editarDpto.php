@@ -9,8 +9,7 @@
   <table class="bordered highlight" id="tabla-dinamica">
     <thead>
       <tr>
-        <th width="20%">No.</th>
-        <th width="80%">Nombre</th>
+        <th >Nombre</th>
       </tr>
     </thead>
     <tbody>
@@ -18,9 +17,8 @@
       $x = 0;
       foreach ($departamentos as $area){
         if ($area['id_area'] != null){  ?>
-        <tr>          
-          <input type="hidden" name="id_area[]" class = "h" value="<?=$area['id_area']?>" />
-          <td><?=++$x?></td>
+        <tr>
+          <input type="hidden" name="id_area[]" value="<?=$area['id_area']?>" />
           <td><?=$area['nombre_area']?></td>
         </tr>
       <?php }
@@ -32,8 +30,8 @@
     <tfoot>
       <tr>
         <td colspan="2" class="right-align">
-          <button type="button" class="waves-effect waves-light btn blue-grey darken-3" name="btn-add-area" id="addArea">Añadir<i class="material-icons right">add</i></button>
-          <a href="#" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="btn-edit-area">Editar<i class="material-icons right">edit</i></a>
+          <button type="button" class="waves-effect waves-light btn blue-grey darken-3" name="btn-add-area" id="btn-add-area">Añadir<i class="material-icons right">add</i></button>
+          <a href="#" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="btn-edit-area" id="btn-edit-area">Editar<i class="material-icons right">edit</i></a>
           <a href="#" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="btn-delete-area" id="btn-elinar-area">Eliminar<i class="material-icons right">delete</i></a>
         </td>
       </tr>

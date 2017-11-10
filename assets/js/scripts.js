@@ -49,8 +49,7 @@ $('tbody').on('click','tr',function (){
   }
 
   $(this).children('td').addClass( "active-bio" );
-  //$('#jump').attr('href','2');
-  //alert($('#jump').attr('onclick'));
+
   $('#id_activo').val($(this).children('input').val());
 });
 
@@ -67,34 +66,93 @@ $('#id_departamento').change(function(){
 
 $('#addArea').click(function(){
 
-  if ($(this).attr('name') == 'addArea') {
-    if ($('.input-tabla').length == $('#tabla-dinamica tbody tr').length) {
-      $('#tabla-dinamica tbody ').append('<tr><td class="reglon-editable">'+
-      '<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">'+
-      '</td></tr>');
-    }else {
-      $('#tabla-dinamica tbody tr td').eq($('.input-tabla').length).append('<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">');
-    }
-  }else{
-    if ($('.h').length > 0){
-
-    }else {
-
-    }
-    alert($('.h').length)
-    //alert($('#tabla-dinamica tbody tr').length)
+  if ($('.input-tabla').length == $('#tabla-dinamica tbody tr').length) {
+    $('#tabla-dinamica tbody ').append('<tr><td class="reglon-editable">'+
+    '<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">'+
+    '</td></tr>');
+  }else {
+    $('#tabla-dinamica tbody tr td').eq($('.input-tabla').length).append('<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">');
   }
 
 });
 
 $('#btn-elinar-area').click(function(){
+  $('#tabla-dinamica').append('<input type="hidden" name="id_area_delete[]" value="'+$('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).children('input').val()+'" />')
   $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
-  $('#viewhtml').val($('#tabla-dinamica tbody').html());
 });
 
+$('#btn-add-area').click(function(){
+  $('#tabla-dinamica tbody ').append('<tr><td class="reglon-editable">'+
+  '<input type="text" name="areas[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="">'+
+  '</td></tr>');
+});
+
+$('#btn-edit-area').click(function(){
+  $renglon = $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index());
+
+  $renglon.children('input').attr('name','id_area_edit[]');
+  $renglon.children('td').html('<input type="text" name="area_editada[]" class="input-tabla" style="margin-bottom: 1px; height: 1rem; " value="'+$renglon.children('td').text()+'">')
+});
+
+$('#btn-add-inv').click(function(){
+
+  $('#tabla-dinamica tbody ').append('<tr><td>'
+  +'<div class="input-field">'
+  +'<select id="id_proveedor" name="id_proveedor[]">'
+  +$('#almacenesSelect').val()
+  +'</select>'
+  +'<label>Proveedores:</label>'
+  +'</div></td>'
+  +'<td><input type="number" class="contador_inv" name="cantidad[]" value="" min=0></td></tr>');
+  $('select').material_select();
+});
+
+
+$('#tb_inventario').on('click','tr',function (){
+
+  $('td').removeClass( "active-bio" );
+  $('a').removeClass(' disabled');
+
+  $(this).children('td').addClass( "active-bio" );
+  if ($('#tabla-dinamica tbody tr .active-bio').parent('tr').index() == 0){
+    $('#btn-delete-inv').addClass('disabled');
+  }
+
+  //$('#id_activo').val($(this).children('input').val());
+});
+
+$('.delete-renglon').click(function(){
+  $('#tabla-dinamica').append('<input type="hidden" name="id_area_delete[]" value="'+$('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).children('input').val()+'" />')
+  $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
+});
+
+$('td').on('change','.contador_inv',function(){
+  alert($(this).val());
+  var total = 0;
+  $('.contador_inv').each(function(){
+    total += parseInt($(this).val());
+  });
+  $('#totalPzas').text(total);
+});
 
 //Inizializando elementos
 $('.modal').modal();
 $('.button-collapse').sideNav();
 $('select').material_select();
 $('ul.tabs').tabs();
+
+$('.datepicker').pickadate({
+  formatSubmit: 'yyyy-mm-dd',
+	labelMonthNext: 'Siguiente mes',
+	labelMonthPrev: 'Mes anterior',
+	labelMonthSelect: 'Selecciona un mes',
+	labelYearSelect: 'Selecciona un año',
+	monthsFull: [ 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre' ],
+	monthsShort: [ 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic' ],
+	weekdaysFull: [ 'Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sabado' ],
+	weekdaysShort: [ 'Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sa' ],
+	weekdaysLetter: [ 'D', 'L', 'M', 'X', 'J', 'V', 'S' ],
+	today: 'Hoy',
+	clear: 'Limpiar',
+	close: 'Cerrar'
+});

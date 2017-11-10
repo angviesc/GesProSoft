@@ -11,5 +11,14 @@ ALTER TABLE clientes ADD correo VARCHAR(40) NOT NULL AFTER activo;
 
 ALTER TABLE `bitacora` ADD `dispositivo` VARCHAR(30) NOT NULL AFTER `accion`;
 
+
+//Cambios 09/11/2017
+
+ALTER TABLE `articulos_vendidos` ADD `precio_venta` FLOAT UNSIGNED NOT NULL AFTER `id_articulo`;
+
+INSERT INTO `proveedores` (`id`, `nombre_proveedor`, `nombre`, `apellidop`, `apellidom`, `calle`, `colonia`, `cod_pos`, `telefono`, `tel_atl`, `email`, `activo`, `fecha_rgistro`) VALUES (NULL, 'Clinica San Miguel', 'Miguel', 'Perez', 'Perez', 'Calle', 'Colonia', '58000', '2222222', NULL, 'email@q.com', '1', CURRENT_TIMESTAMP);
+
+/*ALTER TABLE `bitacora` ADD `val_ant` TEXT NOT NULL AFTER `registro`, ADD `val_act` TEXT NOT NULL AFTER `val_ant`;*/
+
 /*ALTER TABLE clientes ADD direnvio VARCHAR(50) NOT NULL AFTER correo;
 ALTER TABLE clientes ADD correo VARCHAR(40) NOT NULL AFTER activo;*/
