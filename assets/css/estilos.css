@@ -8,11 +8,21 @@ td.active-bio{
 
 td.reglon-editable{
   padding:15px 5px
+}
 
+.reglon-alineado{
+  padding:0px 5px;
+}
+
+input[type=number]:not(.browser-default){
+  margin: 0 0 6px 0;
 }
 /*
+.contador_inv{
+}
 td > input.input-tabla{
   margin: 0 0 10px 0;
   background-color: yellow;
 }
+style="margin-bottom: 6px;"
 */

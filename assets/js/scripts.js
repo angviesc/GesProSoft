@@ -96,14 +96,15 @@ $('#btn-edit-area').click(function(){
 
 $('#btn-add-inv').click(function(){
 
-  $('#tabla-dinamica tbody ').append('<tr><td>'
+  $('#tabla-dinamica tbody ').append('<tr><td class="reglon-alineado">'
   +'<div class="input-field">'
-  +'<select id="id_proveedor" name="id_proveedor[]">'
+  +'<select name="id_almacen[]">'
   +$('#almacenesSelect').val()
   +'</select>'
   +'<label>Proveedores:</label>'
   +'</div></td>'
-  +'<td><input type="number" class="contador_inv" name="cantidad[]" value="" min=0></td></tr>');
+  +'<td class="reglon-alineado"><input type="number" class="contador_inv"  name="cantidad[]" min=0></td></tr>');
+
   $('select').material_select();
 });
 
@@ -126,7 +127,8 @@ $('.delete-renglon').click(function(){
   $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
 });
 
-$('td').on('change','.contador_inv',function(){
+/*
+$('input').on('change','.contador_inv',function(){
   alert($(this).val());
   var total = 0;
   $('.contador_inv').each(function(){
@@ -134,7 +136,7 @@ $('td').on('change','.contador_inv',function(){
   });
   $('#totalPzas').text(total);
 });
-
+*/
 //Inizializando elementos
 $('.modal').modal();
 $('.button-collapse').sideNav();

@@ -101,7 +101,7 @@
           </thead>
           <tbody id="tb_inventario">
             <tr>
-              <td>
+              <td class="reglon-alineado">
                 <div class="input-field">
                   <select name="id_almacen[]">
                     <?=$selectAlm?>
@@ -109,13 +109,13 @@
                   <label>Proveedores:</label>
                 </div>
               </td>
-              <td><input type="number" class="contador_inv" name="cantidad[]" value="" min=0></td>
+              <td class="reglon-alineado"><input type="number" class="contador_inv"  name="cantidad[]" min=0></td>
             </tr>
           </tbody>
           <tfoot>
             <tr>
-              <th align="left">Piezas totales</th>
-              <th id="totalPzas"></th>
+              <th class="right-align " >Piezas totales </th>
+              <td id="totalPzas" ></td>
             </tr>
             <tr>
               <td colspan="2" class="right-align">

@@ -243,7 +243,7 @@ public function nuevoArticulo(){
 
     $almacenes = $this->modeloctrl->selectAlm();
     if ($almacenes == null) {
-      $data['selectAlm'] = '<option value="" disabled selected>Sin Almacenes registrados</option>';
+      $data['selectAlm'] = '<option value="" disabled selected style="margin-bottom: 1px;">Sin Almacenes registrados</option>';
     }else{
       $data['selectAlm'] = '<option value="" disabled selected>Selecciona un almacen</option>';
       foreach ($almacenes as $almacen) {
