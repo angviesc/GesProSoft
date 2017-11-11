@@ -115,7 +115,7 @@
           <tfoot>
             <tr>
               <th class="right-align " >Piezas totales </th>
-              <td id="totalPzas" ></td>
+              <td id="totalPzas"></td>
             </tr>
             <tr>
               <td colspan="2" class="right-align">
@@ -127,8 +127,28 @@
         </table>
       </div>
 
-      <div class="input-field">
-        <select id="id_proveedor" name="id_proveedor[]">
+      <div class="">
+        <h5>Status</h5>
+        <p>
+          <input name="status" disabled class="bloqueado" value="1" type="radio" id="test1" required/>
+          <label for="test1">Propio</label>
+        </p>
+        <p>
+          <input name="status" disabled class="bloqueado" value="2" type="radio" id="test2" required/>
+          <label for="test2">Por contrato</label>
+        </p>
+        <p>
+          <input name="status" disabled class="bloqueado" value="3" type="radio" id="test3" required/>
+          <label for="test3">En garantia</label>
+        </p>
+        <p>
+          <input name="status" disabled class="bloqueado" value="4" type="radio" id="test4" required/>
+          <label for="test4">Subrogado</label>
+        </p>
+      </div>
+
+      <div class="input-field" >
+        <select id="id_proveedor" name="id_proveedor" disabled class="bloqueado">
           <?=$selectProv?>
         </select>
         <label for="nombre">Proveedor:</label>

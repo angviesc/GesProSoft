@@ -262,26 +262,40 @@ public function nuevoArticulo(){
 }
 
 public function insertArticulo(){
-echo "<pre>";
-print_r($this->input->post());
-exit;
+  //echo "<pre>";print_r($this->input->post());
+
   $articulo = $this->input->post();
 
   $articulo['descripcion'] = nl2br($articulo['descripcion']);
   $articulo['nota'] = nl2br($articulo['nota']);
   unset ($articulo['submitGua']);
+  if ($this->input->post('id_almacen')){
+    $stock = array('ids' => $this->input->post('id_almacen'), 'cantidad' => $this->input->post('cantidad'));
+    unset ($articulo['id_almacen']);
+  }
+  unset ($articulo['cantidad']);
 
   if($this->input->post('equipo-unico')){
     $art_unico = array('marca' =>$articulo['marca'] ,'modelo' => $articulo['modelo'], 'serie' =>$articulo['serie'], 'fecha_instalacion' => $articulo['fecha_instalacion_submit']);
+    if ($articulo['status']){
+      $art_unico['status'] = $articulo['status'];
+    }
     unset ($articulo['equipo-unico']);
     unset ($articulo['marca']);
     unset ($articulo['modelo']);
     unset ($articulo['serie']);
     unset ($articulo['fecha_instalacion_submit']);
-    $this->modeloctrl->insertArtUnico($articulo,$art_unico);
+    unset ($articulo['fecha_instalacion']);
+    unset ($articulo['status']);
+    $id = $this->modeloctrl->insertArtUnico($articulo,$art_unico);
   }else{
-    $this->modeloctrl->insertArticulo($articulo);
+    unset ($articulo['fecha_instalacion_submit']);
+    $id = $this->modeloctrl->insertArticulo($articulo);
   }
+
+
+  if (isset($stock))
+    $this->modeloctrl->insertStock($id,$stock);
 
   if ($this->input->post('sed')){
     echo '<script language="javascript">
@@ -293,6 +307,113 @@ exit;
     window.close();
     </script>';
   }
+}
+
+public function editArticulo(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
+
+    $data['articulo'] = $this->modeloctrl->consultArt($this->uri->segment(3));
+
+    $departamentos = $this->modeloctrl->selectDpto();
+    if ($departamentos == null) {
+      $data['selectDpto'] = '<option value="" disabled selected>Sin departamento registrado</option>';
+    }else{
+      $data['selectDpto'] = '<option value="" disabled>Elige un departamento</option>';
+      foreach ($departamentos as $departamento) {
+        if ($data['articulo'][0]['id_articulo'] == $departamento['id'])
+          $data['selectDpto'] .= '<option value="'.$departamento['id'].'" selected>'.$departamento['nombre'].'</option>';
+        else
+          $data['selectDpto'] .= '<option value="'.$departamento['id'].'">'.$departamento['nombre'].'</option>';
+      }
+      $data['selectDpto'] .= '<option value="-1">SIN DEPTO</option>';
+    }
+
+    if ($data['articulo'][0]['id_area'] != null){
+      $areas = $this->modeloctrl->consultaArea($data['articulo'][0]['id_area']);
+      if ($areas == null) {
+        $dropselect = '<select name="id_area" disabled>';
+        $dropselect .= '<option value="" disabled selected>Sin areas registradas</option>';
+      }else{
+        $dropselect = '<select name="id_area">';
+        $dropselect .= '<option value="" disabled selected>Selecciona un area</option>';
+        foreach ($areas as $area) {
+          if ($data['articulo'][0]['id_area'] == $area['id'])
+            $dropselect .= '<option value="'.$area['id'].'" selected>'.$area['nombre'].'</option>';
+          else
+            $dropselect .= '<option value="'.$area['id'].'">'.$area['nombre'].'</option>';
+        }
+        $dropselect .= '<option value="-1">SIN AREA</option>';
+      }
+      $data['selectArea'] = $dropselect;
+
+    }else{
+      $data['selectArea'] = '<select disabled>
+        <option value="" disabled selected>Selecciona un área</option>
+      </select>';
+
+    }
+
+    $proveedores = $this->modeloctrl->selectProv();
+    if ($proveedores == null) {
+      $data['selectProv'] = '<option value="" disabled selected>Sin Proveedores registrados</option>';
+    }else{
+      $data['selectProv'] = '<option value="" disabled selected>Elige un proveedor</option>';
+      foreach ($proveedores as $proveedor) {
+        if ($data['articulo'][0]['proveedor'] == $proveedor['id'])
+          $data['selectProv'] .= '<option value="'.$proveedor['id'].'" selected>'.$proveedor['nombre_proveedor'].'</option>';
+        else
+          $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
+      }
+      $data['selectProv'] .= '<option value="-1">EQUIPO PROPIO</option>';
+    }
+
+    //echo "<pre>";    print_r($data['articulo']);    exit;
+
+    $this->load->view('encabezado');
+    $this->load->view('Articulos/editArticulo',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function actualizaArt(){
+  $articulo = $this->input->post();
+
+  $articulo['descripcion'] = nl2br($articulo['descripcion']);
+  $articulo['nota'] = nl2br($articulo['nota']);
+  unset ($articulo['submitGua']);
+  if($this->input->post('marca')){
+    $art_unico = array('marca' =>$articulo['marca'] ,'modelo' => $articulo['modelo'], 'serie' =>$articulo['serie'], 'fecha_instalacion' => $articulo['fecha_instalacion_submit']);
+    if ($articulo['status']){
+      $art_unico['status'] = $articulo['status'];
+    }
+    if ($articulo['id_proveedor']){
+      $art_unico['id_proveedor'] = $articulo['id_proveedor'];
+    }
+    unset ($articulo['marca']);
+    unset ($articulo['modelo']);
+    unset ($articulo['serie']);
+    unset ($articulo['fecha_instalacion_submit']);
+    unset ($articulo['fecha_instalacion']);
+    unset ($articulo['status']);
+    unset ($articulo['id_proveedor']);
+
+  //  $id = $this->modeloctrl->insertArtUnico($articulo,$art_unico);
+  }else{
+    unset ($articulo['fecha_instalacion_submit']);
+  //  $id = $this->modeloctrl->insertArticulo($articulo);
+  }
+
+
+
+  echo "<pre>";
+  print_r($articulo);
+  print_r($art_unico);
+  exit;
+
+
 }
 
 public function consultaArea(){
@@ -309,13 +430,10 @@ public function consultaArea(){
     }
     $dropselect .= '<option value="-1">SIN AREA</option>';
   }
-
   $dropselect .= '</select><label >Area:</label>';
   echo $dropselect;
 
 }
-
-
 
 public function verArticulos(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){

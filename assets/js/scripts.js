@@ -33,9 +33,14 @@ function validaBio(formulario){
 $('#ctrl-active').click(function(){
   if ($(this).prop('checked')){
     $('.bloqueado').attr('disabled', false);
+    $('#btn-add-inv').addClass(' disabled');
+    $('.contador_inv').attr('max',1);
   }else {
     $('.bloqueado').attr('disabled', true);
+    $('#btn-add-inv').removeClass(' disabled');
+    $('.contador_inv').removeAttr('max');
   }
+  $('select').material_select();
 });
 
 $('tbody').on('click','tr',function (){

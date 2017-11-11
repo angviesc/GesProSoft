@@ -99,6 +99,7 @@ class Modeloctrl extends CI_Model{
 			$this->insertBitacora($bitacora);
 		}
 
+		return $id[0]->id;
 	}
 
 	function insertArtUnico($articulo, $articuloU){
@@ -116,8 +117,8 @@ class Modeloctrl extends CI_Model{
 			$bitacora['registro'] = $id[0]->id;
 			$this->insertBitacora($bitacora);
 		}
+		return $id[0]->id;
 	}
-
 
 	function selectArt(){
 		//$this->db->select('art.*, au.');
@@ -127,6 +128,17 @@ class Modeloctrl extends CI_Model{
 
 		return json_decode(json_encode($res->result()), True);
 	}
+
+	function consultArt($id){
+
+		$this->db->where('id', $id);
+		$this->db->join('articulo_unico au', 'a.id = au.id_articulo', 'LEFT');
+		$res = $this->db->get('articulos a');
+
+		return json_decode(json_encode($res->result()), True);
+	}
+
+// Stock
 
 	function selectStock(){
 		$this->db->select('a.codigo, a.nombre as articulo, al.nombre as almacen, s.cantidad');
@@ -138,6 +150,46 @@ class Modeloctrl extends CI_Model{
 		$res = $this->db->get();
 
 		return json_decode(json_encode($res->result()), True);
+	}
+
+	function insertStock($id_articulo,$stock){
+
+		for ($i=0; $i < count($stock['ids']); $i++) {
+			$this->db->select('id, cantidad');
+			$this->db->where('id_articulo',$id_articulo);
+			$this->db->where('id_almacen',$stock['ids'][$i]);
+			$res = $this->db->get('stock');
+
+			if ($res->num_rows() == 1 ){
+				$suma = $res->result();
+				$total = $suma[0]->cantidad+$stock['cantidad'][$i];
+				$this->db->set('cantidad',$total);
+				$this->db->where('id',$suma[0]->id);
+				$this->db->update('stock');
+
+				$bitacora = array('usuario' => $this->session->userdata('user'),
+				'accion' => 'Actualizar',
+				'tabla' => 'stock',
+				'registro' => $suma[0]->id);
+
+				$this->insertBitacora($bitacora);
+			}else{
+				$this->db->set(array('id_articulo' => $id_articulo, 'id_almacen' => $stock['ids'][$i], 'cantidad' => $stock['cantidad'][$i]));
+				$this->db->insert('stock');
+				$id = $this->db->query('SELECT @@identity AS id');
+
+				if ($id->num_rows() == 1 ){
+					$id = $id->result();
+					$bitacora = array('usuario' => $this->session->userdata('user'),
+					'accion' => 'Alta',
+					'tabla' => 'stock',
+					'registro' => $id[0]->id);
+
+					$this->insertBitacora($bitacora);
+				}
+			}
+
+		}
 	}
 
 //Almacenes
