@@ -1,5 +1,5 @@
 <div class="container">
-  <?= form_open('Sistemactrl/insertArticulo')?>
+  <?= form_open('Sistemactrl/insertArticulo','',$sed)?>
   <div class="row">
 
     <div class="col s12 ">

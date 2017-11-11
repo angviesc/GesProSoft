@@ -26,18 +26,18 @@ class Sistemactrl extends CI_Controller {
                                       'Nuevo almacen' => array( 'popUp' => site_url('Sistemactrl/nuevoAlm/1')),
                                       'Ver Almacenes' => site_url('Sistemactrl/verAlm')),
                                 'Proveedores' => array(
-                                      'Nuevo proveedor' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
-                                      'Ver proveedores' => site_url('Sistemactrl/SinFuncion')),
+                                      'Nuevo proveedor' => array( 'popUp' => site_url('Sistemactrl/nuevoProv/1')),
+                                      'Ver proveedores' => site_url('Sistemactrl/verProveedores')),
                                 'Clientes' => array(
-                                      'Nuevo cliente' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
-                                      'Ver clientes' => site_url('Sistemactrl/SinFuncion')),
+                                      'Nuevo cliente' => array( 'popUp' => site_url('Sistemactrl/nuevoCliente/1')),
+                                      'Ver clientes' => site_url('Sistemactrl/verClientes')),
                                 'Administrar Biomédicos' => array(
                                       'Nuevo Biomedico' => array( 'popUp' => site_url('Sistemactrl/nuevoBio/1')),
                                       'Ver Biomedicos' => site_url('Sistemactrl/verBio')),
                                 'Informes' => array(
                                       'PENDIENTE' => array( 'popUp' => site_url('Sistemactrl/SinFuncion')),
                                       'PENDIENTE-' => site_url('Sistemactrl/SinFuncion')),
-								                'Cerrar sesion' => site_url('Sistemactrl/cerrar_sesion'));
+								                'Cerrar sesion' => site_url('Sistemactrl/cerrarSesion'));
 
 
 
@@ -128,6 +128,7 @@ class Sistemactrl extends CI_Controller {
 
   public function insertarBio(){
     if ($this->input->post('submitGua')){
+
       $empleado = $this->input->post();
       $usuario = array('usuario' => $empleado['usuario'],
       'password' => md5($empleado['password']),
@@ -249,9 +250,7 @@ public function nuevoArticulo(){
       foreach ($almacenes as $almacen) {
         $data['selectAlm'] .= '<option value="'.$almacen['id'].'">'.$almacen['nombre'].'</option>';
       }
-
     }
-
 
     $this->load->view('encabezado');
     $this->load->view('Articulos/nuevoArticulo',$data);
@@ -360,7 +359,7 @@ public function editArticulo(){
     }else{
       $data['selectProv'] = '<option value="" disabled selected>Elige un proveedor</option>';
       foreach ($proveedores as $proveedor) {
-        if ($data['articulo'][0]['proveedor'] == $proveedor['id'])
+        if ($data['articulo'][0]['id_proveedor'] == $proveedor['id'])
           $data['selectProv'] .= '<option value="'.$proveedor['id'].'" selected>'.$proveedor['nombre_proveedor'].'</option>';
         else
           $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
@@ -384,12 +383,14 @@ public function actualizaArt(){
   $articulo['descripcion'] = nl2br($articulo['descripcion']);
   $articulo['nota'] = nl2br($articulo['nota']);
   unset ($articulo['submitGua']);
+
   if($this->input->post('marca')){
     $art_unico = array('marca' =>$articulo['marca'] ,'modelo' => $articulo['modelo'], 'serie' =>$articulo['serie'], 'fecha_instalacion' => $articulo['fecha_instalacion_submit']);
     if ($articulo['status']){
       $art_unico['status'] = $articulo['status'];
     }
-    if ($articulo['id_proveedor']){
+
+    if ($this->input->post('id_proveedor')){
       $art_unico['id_proveedor'] = $articulo['id_proveedor'];
     }
     unset ($articulo['marca']);
@@ -400,19 +401,24 @@ public function actualizaArt(){
     unset ($articulo['status']);
     unset ($articulo['id_proveedor']);
 
-  //  $id = $this->modeloctrl->insertArtUnico($articulo,$art_unico);
+    $id = $this->modeloctrl->actualizaArtUnico($articulo,$art_unico);
   }else{
     unset ($articulo['fecha_instalacion_submit']);
-  //  $id = $this->modeloctrl->insertArticulo($articulo);
+
+    $id = $this->modeloctrl->actualizaArt($articulo);
   }
 
+  echo '<script language="javascript">
+  window.opener.document.location="verArticulos/UPDATE_OK"
+  window.close();
+  </script>';
 
+}
 
-  echo "<pre>";
-  print_r($articulo);
-  print_r($art_unico);
-  exit;
+public function eliminarArt(){
 
+  $this->modeloctrl->eliminarArt($this->input->post('id_activo'));
+  redirect('Sistemactrl/verArticulos/DELETE_OK','refresh');
 
 }
 
@@ -650,6 +656,187 @@ public function eliminarDpto(){
   redirect('Sistemactrl/verDpto/DELETE_OK','refresh');
 }
 
+//proveedores
+
+public function nuevoProv(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
+    $this->load->view('encabezado');
+    $this->load->view('Proveedores/nuevoProv',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function insertarProv(){
+
+  $proveedor = $this->input->post();
+  unset ($proveedor['submitGua']);
+  unset ($proveedor['sed']);
+
+  $this->modeloctrl->insertProv($proveedor);
+
+  if ($this->input->post('sed')){
+    echo '<script language="javascript">
+    window.close();
+    </script>';
+  }else {
+    echo '<script language="javascript">
+    window.opener.document.location="verProveedores/INSERT_OK"
+    window.close();
+    </script>';
+  }
+}
+
+public function verProveedores(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $data['proveedores'] = $this->modeloctrl->selectProv();
+
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    $this->load->view('Proveedores/verProv',$data);
+    $this->load->view('pie');
+
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function editarProv(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $data['proveedor'] = $this->modeloctrl->consultProv($this->uri->segment(3));
+
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $this->load->view('encabezado');
+    $this->load->view('Proveedores/editProv',$data);
+    $this->load->view('pie');
+
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function actualizaProv(){
+  $proveedor = $this->input->post();
+  unset ($proveedor['submitGua']);
+
+  $this->modeloctrl->actualizaProv($proveedor);
+
+  echo '<script language="javascript">
+  window.opener.document.location="verProveedores/UPDATE_OK"
+  window.close();
+  </script>';
+}
+
+public function eliminarProv(){
+  $this->modeloctrl->eliminarProv($this->input->post('id_activo'));
+  redirect('Sistemactrl/verProveedores/DELETE_OK','refresh');
+}
+
+//Clientes
+
+public function nuevoCliente(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
+    $this->load->view('encabezado');
+    $this->load->view('Clientes/nuevoCliente',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function insertarCliente(){
+  $proveedor = $this->input->post();
+  unset ($proveedor['submitGua']);
+  unset ($proveedor['sed']);
+
+  $this->modeloctrl->insertCliente($proveedor);
+
+  if ($this->input->post('sed')){
+    echo '<script language="javascript">
+    window.close();
+    </script>';
+  }else {
+    echo '<script language="javascript">
+    window.opener.document.location="verClientes/INSERT_OK"
+    window.close();
+    </script>';
+  }
+}
+
+public function verClientes(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $data['cleintes'] = $this->modeloctrl->selectClientes();
+
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    $this->load->view('clientes/verClientes',$data);
+    $this->load->view('pie');
+
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function editarCliente(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $data['cliente'] = $this->modeloctrl->consultCliente($this->uri->segment(3));
+
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $this->load->view('encabezado');
+    $this->load->view('Clientes/editCliente',$data);
+    $this->load->view('pie');
+
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function actualizarCliente(){
+  $cliente = $this->input->post();
+  unset ($cliente['submitGua']);
+
+  $this->modeloctrl->actualizaCliente($cliente);
+
+  echo '<script language="javascript">
+  window.opener.document.location="verClientes/UPDATE_OK"
+  window.close();
+  </script>';
+}
+
+public function eliminarCliente(){
+  $this->modeloctrl->eliminarCliente($this->input->post('id_activo'));
+  redirect('Sistemactrl/verClientes/DELETE_OK','refresh');
+}
+
 function test(){
   echo "<pre>";
   print_r($this->input->post());
@@ -658,5 +845,54 @@ function test(){
 
   public function inicioBio(){
     echo "inicio Biomedico";
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  public function cerrarSesion(){
+    $this->session->sess_destroy();
+		redirect('','refresh');
   }
 }

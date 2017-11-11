@@ -138,6 +138,47 @@ class Modeloctrl extends CI_Model{
 		return json_decode(json_encode($res->result()), True);
 	}
 
+	function actualizaArt($articulo){
+		$this->db->set($articulo);
+		$this->db->where('id',$articulo['id']);
+		$this->db->update('articulos');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Actualizar',
+		'tabla' => 'articulos');
+		$bitacora['registro'] = $articulo['id'];
+		$this->insertBitacora($bitacora);
+	}
+
+	function actualizaArtUnico($articulo, $articuloU){
+		$this->db->set($articulo);
+		$this->db->where('id',$articulo['id']);
+		$this->db->update('articulos');
+
+		$this->db->set($articuloU);
+		$this->db->where('id_articulo',$articulo['id']);
+		$this->db->update('articulo_unico');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Actualizar',
+		'tabla' => 'articulo_unico');
+		$bitacora['registro'] = $articulo['id'];
+		$this->insertBitacora($bitacora);
+	}
+
+	function eliminarArt($id){
+		$this->db->where('id_articulo',$id);
+		$this->db->delete('articulo_unico');
+
+		$this->db->where('id',$id);
+		$this->db->delete('articulos');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Eliminar',
+		'tabla' => 'articulos');
+		$this->insertBitacora($bitacora);
+	}
+
 // Stock
 
 	function selectStock(){
@@ -211,6 +252,7 @@ class Modeloctrl extends CI_Model{
 	}
 
 	function selectAlm(){
+
 		$res = $this->db->get('almacenes');
 		return json_decode(json_encode($res->result()), True);
 	}
@@ -390,11 +432,115 @@ class Modeloctrl extends CI_Model{
 
 //Proveedores
 
+
+	function insertProv($proveedor){
+		$this->db->set($proveedor);
+		$this->db->insert('proveedores');
+
+		$id = $this->db->query('SELECT @@identity AS id');
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Alta',
+			'tabla' => 'proveedores');
+			$bitacora['registro'] = $id[0]->id;
+			$this->insertBitacora($bitacora);
+		}
+	}
+
 	function selectProv(){
+		$this->db->where('activo',1);
 		$res = $this->db->get('proveedores');
 		return json_decode(json_encode($res->result()), True);
 	}
 
+	function consultProv($id){
+		$this->db->where('id',$id);
+		$this->db->where('activo',1);
+		$res = $this->db->get('proveedores');
+		return json_decode(json_encode($res->result()), True);
+	}
+
+	function actualizaProv($proveedor){
+		$this->db->set($proveedor);
+		$this->db->where('id',$proveedor['id']);
+		$this->db->update('proveedores');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Actualizar',
+		'tabla' => 'proveedores');
+		$bitacora['registro'] = $proveedor['id'];
+		$this->insertBitacora($bitacora);
+	}
+
+	function eliminarProv($id){
+		$this->db->set('activo',0);
+		$this->db->where('id', $id);
+		$this->db->update('proveedores');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Eliminar',
+		'tabla' => 'proveedores');
+		$bitacora['registro'] = $id;
+		$this->insertBitacora($bitacora);
+	}
+
+//Clientes
+
+
+
+	function insertCliente($cliente){
+		$this->db->set($cliente);
+		$this->db->insert('clientes');
+
+		$id = $this->db->query('SELECT @@identity AS id');
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Alta',
+			'tabla' => 'proveedores');
+			$bitacora['registro'] = $id[0]->id;
+			$this->insertBitacora($bitacora);
+		}
+	}
+	function selectClientes(){
+		$this->db->where('activo',1);
+		$res = $this->db->get('clientes');
+		return json_decode(json_encode($res->result()), True);
+	}
+
+	function consultCliente($id){
+		$this->db->where('id',$id);
+		$this->db->where('activo',1);
+		$res = $this->db->get('clientes');
+		return json_decode(json_encode($res->result()), True);
+	}
+
+	function actualizaCliente($cliente){
+		$this->db->set($cliente);
+		$this->db->where('id',$cliente['id']);
+		$this->db->update('clientes');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Actualizar',
+		'tabla' => 'clientes');
+		$bitacora['registro'] = $cliente['id'];
+		$this->insertBitacora($bitacora);
+	}
+
+	function eliminarCliente($id){
+		$this->db->set('activo',0);
+		$this->db->where('id', $id);
+		$this->db->update('clientes');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Eliminar',
+		'tabla' => 'clientes');
+		$bitacora['registro'] = $id;
+		$this->insertBitacora($bitacora);
+	}
+
+//
 
 	function insertBitacora($bitacora){
 		 $bitacora['dispositivo'] = ($this->agent->is_mobile())? "Movil" : "Escritorio";

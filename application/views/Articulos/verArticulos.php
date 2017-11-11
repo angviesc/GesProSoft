@@ -38,10 +38,10 @@
 
  <!-- Modal Structure -->
  <div id="modal1" class="modal">
-   <?= form_open('Sistemactrl/eliminarBio')?>
+   <?= form_open('Sistemactrl/eliminarArt')?>
    <div class="modal-content">
      <h4>Confirmacion</h4>
-     <p>¿Esta seguro que desea eliminar al biomedico seleccionado?</p>
+     <p>¿Esta seguro que desea eliminar el articulo seleccionado?</p>
      <input type="hidden" name="id_activo" id="id_activo" value="" />
    </div>
    <div class="modal-footer">

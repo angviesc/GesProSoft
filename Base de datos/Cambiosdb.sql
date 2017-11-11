@@ -19,7 +19,7 @@ ALTER TABLE `articulos_vendidos` ADD `precio_venta` FLOAT UNSIGNED NOT NULL AFTE
 INSERT INTO `proveedores` (`id`, `nombre_proveedor`, `nombre`, `apellidop`, `apellidom`, `calle`, `colonia`, `cod_pos`, `telefono`, `tel_atl`, `email`, `activo`, `fecha_rgistro`) VALUES (NULL, 'Clinica San Miguel', 'Miguel', 'Perez', 'Perez', 'Calle', 'Colonia', '58000', '2222222', NULL, 'email@q.com', '1', CURRENT_TIMESTAMP);
 
 ALTER TABLE `articulo_unico` ADD `status` INT NOT NULL AFTER `serie`;
-ALTER TABLE `articulo_unico` ADD `proveedor` INT NOT NULL AFTER `status`;
+ALTER TABLE `articulo_unico` ADD `id_proveedor` INT NOT NULL AFTER `status`;
 
 
 /*ALTER TABLE `bitacora` ADD `val_ant` TEXT NOT NULL AFTER `registro`, ADD `val_act` TEXT NOT NULL AFTER `val_ant`;*/

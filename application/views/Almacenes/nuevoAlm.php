@@ -1,5 +1,5 @@
 <div class="container">
-  <?= form_open('Sistemactrl/insertarAlm')?>
+  <?= form_open('Sistemactrl/insertarAlm','',$sed)?>
   <h4>Nuevo Almacen</h4>
   <div class="input-field">
     <input type="text" name="nombre" id="nombre" required>
