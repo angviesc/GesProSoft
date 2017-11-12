@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://132.247.186.25/esuarez/ctrlStock';
+$config['base_url'] = 'http://localhost/GesProSoft/';
 
 /*
 |--------------------------------------------------------------------------

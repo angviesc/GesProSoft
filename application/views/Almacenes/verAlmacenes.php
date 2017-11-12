@@ -1,6 +1,6 @@
  <div class="container">
    <center>
-     <h4>Lista de Articulos</h4>
+     <h4>Lista de Almacenes</h4>
    </center>
    <div class="right-align">
      <?= anchor_popup('Sistemactrl/nuevoAlm', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>

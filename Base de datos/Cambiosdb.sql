@@ -21,6 +21,7 @@ INSERT INTO `proveedores` (`id`, `nombre_proveedor`, `nombre`, `apellidop`, `ape
 ALTER TABLE `articulo_unico` ADD `status` INT NOT NULL AFTER `serie`;
 ALTER TABLE `articulo_unico` ADD `id_proveedor` INT NOT NULL AFTER `status`;
 
+ALTER TABLE `ventas` ADD `nota` TEXT NOT NULL AFTER `id_cliente`;
 
 /*ALTER TABLE `bitacora` ADD `val_ant` TEXT NOT NULL AFTER `registro`, ADD `val_act` TEXT NOT NULL AFTER `val_ant`;*/
 

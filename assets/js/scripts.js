@@ -132,8 +132,9 @@ $('.delete-renglon').click(function(){
   $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
 });
 
-/*
-$('input').on('change','.contador_inv',function(){
+//$('.selecArt').
+
+$('input').on('click','.contador_inv',function(){
   alert($(this).val());
   var total = 0;
   $('.contador_inv').each(function(){
@@ -141,13 +142,22 @@ $('input').on('change','.contador_inv',function(){
   });
   $('#totalPzas').text(total);
 });
+/*
+$('.selectArt').change(function(){
+
+});*/
+$('select').on('click','.selectArt',function(){
+  alert($(this).val());
+
+});
+/*
 */
+
 //Inizializando elementos
 $('.modal').modal();
 $('.button-collapse').sideNav();
 $('select').material_select();
 $('ul.tabs').tabs();
-
 $('.datepicker').pickadate({
   formatSubmit: 'yyyy-mm-dd',
 	labelMonthNext: 'Siguiente mes',

@@ -15,7 +15,7 @@ class Sistemactrl extends CI_Controller {
                                       'divider',
                                       'Abrir lista de pedidos' => site_url('Sistemactrl/SinFuncion'),
                                       'divider',
-                                      'Vender stock' => site_url('Sistemactrl/SinFuncion'),
+                                      'Vender stock' => array( 'popUp' => site_url('Sistemactrl/venderStock/1')),
                                       'Recibir stock' => site_url('Sistemactrl/SinFuncion'),
                                       'Pedir stock' => site_url('Sistemactrl/SinFuncion'),
                                       'Transferir stock' => site_url('Sistemactrl/SinFuncion')),
@@ -268,16 +268,23 @@ public function insertArticulo(){
   $articulo['descripcion'] = nl2br($articulo['descripcion']);
   $articulo['nota'] = nl2br($articulo['nota']);
   unset ($articulo['submitGua']);
+  unset ($articulo['sed']);
   if ($this->input->post('id_almacen')){
     $stock = array('ids' => $this->input->post('id_almacen'), 'cantidad' => $this->input->post('cantidad'));
     unset ($articulo['id_almacen']);
   }
   unset ($articulo['cantidad']);
 
+
   if($this->input->post('equipo-unico')){
     $art_unico = array('marca' =>$articulo['marca'] ,'modelo' => $articulo['modelo'], 'serie' =>$articulo['serie'], 'fecha_instalacion' => $articulo['fecha_instalacion_submit']);
-    if ($articulo['status']){
+    if ($this->input->post('status')){
       $art_unico['status'] = $articulo['status'];
+      unset ($articulo['status']);
+    }
+    if ($this->input->post('id_proveedor')){
+      $art_unico['id_proveedor'] = $articulo['id_proveedor'];
+      unset ($articulo['id_proveedor']);
     }
     unset ($articulo['equipo-unico']);
     unset ($articulo['marca']);
@@ -285,7 +292,7 @@ public function insertArticulo(){
     unset ($articulo['serie']);
     unset ($articulo['fecha_instalacion_submit']);
     unset ($articulo['fecha_instalacion']);
-    unset ($articulo['status']);
+
     $id = $this->modeloctrl->insertArtUnico($articulo,$art_unico);
   }else{
     unset ($articulo['fecha_instalacion_submit']);
@@ -320,7 +327,7 @@ public function editArticulo(){
     }else{
       $data['selectDpto'] = '<option value="" disabled>Elige un departamento</option>';
       foreach ($departamentos as $departamento) {
-        if ($data['articulo'][0]['id_articulo'] == $departamento['id'])
+        if ($data['articulo'][0]['id_departamento'] == $departamento['id'])
           $data['selectDpto'] .= '<option value="'.$departamento['id'].'" selected>'.$departamento['nombre'].'</option>';
         else
           $data['selectDpto'] .= '<option value="'.$departamento['id'].'">'.$departamento['nombre'].'</option>';
@@ -329,7 +336,7 @@ public function editArticulo(){
     }
 
     if ($data['articulo'][0]['id_area'] != null){
-      $areas = $this->modeloctrl->consultaArea($data['articulo'][0]['id_area']);
+      $areas = $this->modeloctrl->consultaArea($data['articulo'][0]['id_departamento']);
       if ($areas == null) {
         $dropselect = '<select name="id_area" disabled>';
         $dropselect .= '<option value="" disabled selected>Sin areas registradas</option>';
@@ -364,7 +371,10 @@ public function editArticulo(){
         else
           $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
       }
-      $data['selectProv'] .= '<option value="-1">EQUIPO PROPIO</option>';
+      if ($data['articulo'][0]['id_proveedor'] == -1)
+        $data['selectProv'] .= '<option value="-1" selected>EQUIPO PROPIO</option>';
+      else
+        $data['selectProv'] .= '<option value="-1">EQUIPO PROPIO</option>';
     }
 
     //echo "<pre>";    print_r($data['articulo']);    exit;
@@ -494,12 +504,20 @@ public function insertarAlm(){
   $almacen = $this->input->post();
   $almacen['ubicacion'] = nl2br($almacen['ubicacion']);
   unset ($almacen['submitGua']);
+  unset ($almacen['sed']);
 
   $this->modeloctrl->insertAlm($almacen);
-  echo '<script language="javascript">
-  window.opener.document.location="verAlm/INSERT_OK"
-  window.close();
-  </script>';
+
+  if ($this->input->post('sed')){
+    echo '<script language="javascript">
+    window.close();
+    </script>';
+  }else {
+    echo '<script language="javascript">
+    window.opener.document.location="verAlm/INSERT_OK"
+    window.close();
+    </script>';
+  }
 }
 
 public function verAlm(){
@@ -837,6 +855,30 @@ public function eliminarCliente(){
   redirect('Sistemactrl/verClientes/DELETE_OK','refresh');
 }
 
+public function venderStock(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
+
+    $articulos = $this->modeloctrl->selectArt();
+
+
+    if ($articulos == null) {
+      $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
+    }else{
+      $data['selectArt'] = '<option value="" disabled selected>Elige un articulo</option>';
+      foreach ($articulos as $articulo) {
+        $data['selectArt'] .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+      }
+    }
+    $this->load->view('encabezado');
+    $this->load->view('Ventas/venderStock',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+
+}
+
 function test(){
   echo "<pre>";
   print_r($this->input->post());
@@ -846,38 +888,6 @@ function test(){
   public function inicioBio(){
     echo "inicio Biomedico";
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
