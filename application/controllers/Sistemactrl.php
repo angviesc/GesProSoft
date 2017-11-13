@@ -861,7 +861,6 @@ public function venderStock(){
 
     $articulos = $this->modeloctrl->selectArt();
 
-
     if ($articulos == null) {
       $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
     }else{
@@ -870,13 +869,59 @@ public function venderStock(){
         $data['selectArt'] .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
       }
     }
+
+    $clientes = $this->modeloctrl->selectClientes();
+
+    if ($clientes == null) {
+      $data['selectCli'] = '<option value="" disabled selected>Sin clientes registrados</option>';
+    }else{
+      $data['selectCli'] = '<option value="" disabled selected>Elige un cliente</option>';
+      foreach ($clientes as $cliente) {
+        $data['selectCli'] .= '<option value="'.$cliente['id'].'">'.$cliente['nombre_cliente'].'</option>';
+      }
+    }
+
     $this->load->view('encabezado');
-    $this->load->view('Ventas/venderStock',$data);
+    $this->load->view('Stock/venderStock',$data);
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
   }
 
+}
+
+public function cargarUb(){
+
+  $ubicacion = $this->modeloctrl->consultaUb($this->input->post('id_art'));
+  
+  if ($ubicacion == null) {
+    $dropselect = '<select name="id_almacen[]" class = "selectAlm" disabled>';
+    $dropselect .= '<option value="" disabled selected>Sin existencias</option>';
+  }else{
+    $dropselect = '<select name="id_almacen[]" class = "selectAlm">';
+    $dropselect .= '<option value="" disabled selected>Selecciona un almacen</option>';
+    foreach ($ubicacion as $area) {
+      $dropselect .= '<option value="'.$area['id_almacen'].'">'.$area['nombre'].'</option>';
+    }
+    
+  }
+  $dropselect .= '</select><label >Almacen:</label>';
+  echo $dropselect;
+
+}
+
+public function cargarPrecio(){
+
+  $precio = $this->modeloctrl->consultaPrecio($this->input->post('id_art'));
+  echo $precio;
+
+}
+
+public function cargarExistencias(){ 
+  
+  $existencias = $this->modeloctrl->consultaExistencias($this->input->post('id_alm'), $this->input->post('id_art'));
+  echo $existencias;
+  
 }
 
 function test(){

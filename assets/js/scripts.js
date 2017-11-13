@@ -134,24 +134,63 @@ $('.delete-renglon').click(function(){
 
 //$('.selecArt').
 
-$('input').on('click','.contador_inv',function(){
-  alert($(this).val());
+$('tbody').on('change','.contador_inv',function(){  
   var total = 0;
   $('.contador_inv').each(function(){
     total += parseInt($(this).val());
   });
   $('#totalPzas').text(total);
 });
-/*
-$('.selectArt').change(function(){
 
-});*/
-$('select').on('click','.selectArt',function(){
-  alert($(this).val());
-
+$('#btn-add-art').click(function(){
+  $('#tabla-dinamica tbody ').append('<tr><td><select class="selectArt" name="">'
+    +$('#drop_art').val()
+    +'</select></td><td></td><td></td><td></td><td></td></tr>');
+  $('select').material_select();
 });
+
+$('tbody').on('change','.selectArt',function(){
+  if ($(this).val() != ''){    
+  var index = $(this).parent().parent().parent().index();  
+  var id_art = $(this).val();
+  
+    var php = $('#site_url').val()+'/Sistemactrl/cargarUb/';
+    $.post( php, {id_art : id_art},
+      function(data){                
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).html(data);
+        $('select').material_select();
+      }
+    );
+//$('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).text('Aqui');
+  //.children('td').text('Aqui');
+  }
+});
+$('tbody').on('change','.selectAlm',function(){
+  if ($(this).val() != ''){    
+  var index = $(this).parent().parent().parent().index();
+  var id_alm = $(this).val();
+  var id_art = $('#tabla-dinamica tbody').children('tr').eq(index).children('td').find('.selectArt select').val();
+  
+    var php = $('#site_url').val()+'/Sistemactrl/cargarPrecio/';
+    $.post( php, {id_art : id_art},
+      function(data){     
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html(data);           
+      }
+    );
 /*
-*/
+    */
+        var php = $('#site_url').val()+'/Sistemactrl/cargarExistencias/';
+    $.post( php, {id_art : id_art, id_alm : id_alm},
+      function(data){     
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(4).html(data);           
+      }
+    );
+
+//$('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).text('Aqui');
+  //.children('td').text('Aqui');
+  }
+});
+
 
 //Inizializando elementos
 $('.modal').modal();

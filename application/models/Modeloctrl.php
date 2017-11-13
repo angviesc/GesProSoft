@@ -540,6 +540,32 @@ class Modeloctrl extends CI_Model{
 		$this->insertBitacora($bitacora);
 	}
 
+	function consultaUb($id){
+		$this->db->select('id_almacen, nombre');
+		$this->db->join('almacenes a', 'a.id = s.id_almacen','inner');
+		$this->db->where('id_articulo',$id);
+		$res = $this->db->get('stock s');
+
+		return json_decode(json_encode($res->result()),True);
+	}
+
+	function consultaExistencias($id_almacen, $id_articulo){
+		$this->db->select('cantidad');
+		$this->db->where('id_almacen', $id_almacen);
+		$this->db->where('id_articulo', $id_articulo);
+		$res = $this->db->get('stock');
+		$cantidad = $res->result()[0]->cantidad;		
+		return $cantidad;
+	}
+
+	function consultaPrecio($id_articulo){
+		$this->db->select('costo_venta');		
+		$this->db->where('id_articulo', $id_articulo);
+		$res = $this->db->get('articulos');
+		$precio = $res->result()[0]->costo_venta;		
+		return $precio;
+	}
+
 //
 
 	function insertBitacora($bitacora){
