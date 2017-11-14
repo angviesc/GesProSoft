@@ -23,6 +23,8 @@ ALTER TABLE `articulo_unico` ADD `id_proveedor` INT NOT NULL AFTER `status`;
 
 ALTER TABLE `ventas` ADD `nota` TEXT NOT NULL AFTER `id_cliente`;
 
+ALTER TABLE `ventas` ADD `fecha_registro` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `fecha_venta`;
+
 /*ALTER TABLE `bitacora` ADD `val_ant` TEXT NOT NULL AFTER `registro`, ADD `val_act` TEXT NOT NULL AFTER `val_ant`;*/
 
 /*ALTER TABLE clientes ADD direnvio VARCHAR(50) NOT NULL AFTER correo;

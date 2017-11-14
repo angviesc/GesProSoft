@@ -893,17 +893,17 @@ public function venderStock(){
 public function cargarUb(){
 
   $ubicacion = $this->modeloctrl->consultaUb($this->input->post('id_art'));
-  
+
   if ($ubicacion == null) {
     $dropselect = '<select name="id_almacen[]" class = "selectAlm" disabled>';
     $dropselect .= '<option value="" disabled selected>Sin existencias</option>';
   }else{
-    $dropselect = '<select name="id_almacen[]" class = "selectAlm">';
+    $dropselect = '<select name="id_almacen[]" class = "selectAlm" required>';
     $dropselect .= '<option value="" disabled selected>Selecciona un almacen</option>';
     foreach ($ubicacion as $area) {
       $dropselect .= '<option value="'.$area['id_almacen'].'">'.$area['nombre'].'</option>';
     }
-    
+
   }
   $dropselect .= '</select><label >Almacen:</label>';
   echo $dropselect;
@@ -913,19 +913,139 @@ public function cargarUb(){
 public function cargarPrecio(){
 
   $precio = $this->modeloctrl->consultaPrecio($this->input->post('id_art'));
-  echo $precio;
+  echo '$'.$precio;
 
 }
 
-public function cargarExistencias(){ 
-  
+public function cargarExistencias(){
+
   $existencias = $this->modeloctrl->consultaExistencias($this->input->post('id_alm'), $this->input->post('id_art'));
   echo $existencias;
-  
+
+}
+
+public function previsualizarVenta(){
+//echo "<pre>";  print_r($this->input->post());  exit;
+
+  $venta = array('nombre_venta'=> $this->input->post('nombre_venta'),
+                 'id_cliente' => $this->input->post('id_cliente'),
+                 'nota' => nl2br($this->input->post('nota')),
+                 'fecha_venta' => $this->input->post('fecha_venta_submit'));
+
+  $articulos = $this->input->post('id_articulo');
+  $almacenes = $this->input->post('id_almacen');
+  $cantidades = $this->input->post('cantidad');
+  $articulos_vendidos = array();
+
+  for ($i=0; $i < count($articulos) ; $i++) {
+    if (isset($articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]])){
+      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['cantidad'] += $cantidades[$i];
+    }else{
+      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['id_articulo'] =  $articulos[$i];
+      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['id_almacen'] = $almacenes[$i] ;
+      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['cantidad'] = $cantidades[$i];
+    }
+  }
+
+  $venta_articulos = array();
+
+  foreach ($articulos_vendidos as $articulo) {
+      $show = $this->modeloctrl->existenciaStock($articulo['id_articulo'], $articulo['id_almacen']);
+      $show['id_articulo'] = $articulo['id_articulo'];
+      $show['id_almacen'] = $articulo['id_almacen'];
+      ($articulo['cantidad'] > $show['cantidad'])? $show['venta'] = $show['cantidad'] : $show['venta'] = $articulo['cantidad'];
+      $show['venta'] = $articulo['cantidad'];
+      array_push($venta_articulos, $show);
+  }
+
+  $cliente = $this->modeloctrl->consultCliente($venta['id_cliente']);
+
+  $venta['nombre_cliente'] = $cliente[0]['nombre_cliente'] ;
+
+
+  $data['venta'] = $venta;
+  $data['articulos'] = $venta_articulos;
+
+  $this->load->view('encabezado');
+  $this->load->view('Stock/visualizarVenta',$data);
+  $this->load->view('pie');
+
+}
+
+public function insertarVenta(){
+
+  if ($this->input->post('submitEdit')){
+    $editVenta = $this->input->post();
+
+    $editVenta['selectArt'] = array();
+    $editVenta['selectAlm'] = array();
+
+    foreach ($editVenta['id_articulo'] as $id) {
+
+      $articulos = $this->modeloctrl->selectArt();
+      if ($articulos == null) {
+        $selectArt = '<option value="" disabled selected>Sin articulos registrados</option>';
+      }else{
+        $selectArt = '<option value="" disabled selected>Elige un articulo</option>';
+        foreach ($articulos as $articulo) {
+          if ($id == $articulo['id'])
+            $selectArt .= '<option value="'.$articulo['id'].'" selected>'.$articulo['codigo'].'</option>';
+          else
+            $selectArt .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+        }
+      }
+      array_push($editVenta['selectArt'], $selectArt);
+    }
+
+    foreach ($editVenta['id_almacen'] as $id) {
+      $ubicacion = $this->modeloctrl->selectAlm();
+      if ($ubicacion == null) {
+        $dropselect = '<option value="" disabled selected>Sin existencias</option>';
+      }else{
+        $dropselect = '<option value="" disabled selected>Selecciona un almacen</option>';
+        foreach ($ubicacion as $area) {
+          if ($id == $area['id'])
+            $dropselect .= '<option value="'.$area['id'].'" selected>'.$area['nombre'].'</option>';
+          else
+            $dropselect .= '<option value="'.$area['id'].'">'.$area['nombre'].'</option>';
+        }
+      }
+      array_push($editVenta['selectAlm'], $dropselect);
+
+    }
+
+    $clientes = $this->modeloctrl->selectClientes();
+
+    if ($clientes == null) {
+      $data['selectCli'] = '<option value="" disabled selected>Sin clientes registrados</option>';
+    }else{
+      $data['selectCli'] = '<option value="" disabled selected>Elige un cliente</option>';
+      foreach ($clientes as $cliente) {
+        if ($editVenta['id_cliente'] == $cliente['id'])
+          $data['selectCli'] .= '<option value="'.$cliente['id'].'" selected>'.$cliente['nombre_cliente'].'</option>';
+        else
+          $data['selectCli'] .= '<option value="'.$cliente['id'].'">'.$cliente['nombre_cliente'].'</option>';
+      }
+    }
+
+    $data['editVenta'] = $editVenta;
+
+    $this->load->view('encabezado');
+    $this->load->view('Stock/editarVenta',$data);
+    $this->load->view('pie');
+
+  } else{
+    echo "<pre>";    print_r($this->input->post());    exit;
+
+  }
+
 }
 
 function test(){
-  echo "<pre>";
+
+
+
+
   print_r($this->input->post());
 }
 

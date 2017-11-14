@@ -1,10 +1,10 @@
 <div class="container">
-  <?= form_open('Sistemactrl/previsualizarVenta','',$sed)?>
+  <?= form_open('Sistemactrl/previsualizarVenta')?>
 
   <h4>Vender Stock</h4>
 
   <div class="input-field">
-    <input type="text" name="nombre_venta" id="nombre_venta" required>
+    <input type="text" name="nombre_venta" id="nombre_venta" value="<?=$editVenta['nombre_venta']?>" required>
     <label for="nombre_venta">Folio de seguimiento</label>
   </div>
 
@@ -16,7 +16,7 @@
   </div>
 
   <div class="input-field">
-    <input type="text" class="datepicker" name="fecha_venta" id="fecha_venta" required>
+    <input type="text" class="datepicker" data-value="<?=$editVenta['fecha_venta_submit']?>" name="fecha_venta" id="fecha_venta" required>
     <label for="fecha_venta" name="test">Fecha de venta</label>
   </div>
 
@@ -32,17 +32,23 @@
       </tr>
     </thead>
     <tbody>
-      <tr >
-        <td>
-          <select class="selectArt" name="id_articulo[]">
-            <?=$selectArt?>
-          </select>
-        </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
+      <?php for ($i=0; $i < count($editVenta['selectArt']) ; $i++) { ?>
+        <tr >
+          <td>
+            <select class="selectArt" name="id_articulo[]">
+              <?=$editVenta['selectArt'][$i]?>
+            </select>
+          </td>
+          <td>
+            <select class="selectAlm" name="id_almacen[]">
+              <?=$editVenta['selectAlm'][$i]?>
+            </select>
+          </td>
+          <td><input type="number" name="cantidad[]" min = "0" max ="<?=$editVenta['cantidad_stock'][$i]?>" value="<?=$editVenta['cantidad_venta'][$i]?>"></td>
+          <td>$<?=$editVenta['costo_venta'][$i]?></td>
+          <td><?=$editVenta['cantidad_stock'][$i]?></td>
+        </tr>
+    <?php } ?>
     </tbody>
     <tfoot>
       <tr>
@@ -55,7 +61,7 @@
   </table>
 
   <div class="input-field">
-    <textarea name="nota" id="nota" class="materialize-textarea" rows="4" cols="80"></textarea>
+    <textarea name="nota" id="nota" class="materialize-textarea" rows="4" cols="80"><?=str_replace('<br />','',$editVenta['nota'])?></textarea>
     <label for="nota">Nota:</label>
   </div>
 

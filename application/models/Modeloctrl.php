@@ -554,16 +554,28 @@ class Modeloctrl extends CI_Model{
 		$this->db->where('id_almacen', $id_almacen);
 		$this->db->where('id_articulo', $id_articulo);
 		$res = $this->db->get('stock');
-		$cantidad = $res->result()[0]->cantidad;		
+		$cantidad = $res->result()[0]->cantidad;
 		return $cantidad;
 	}
 
 	function consultaPrecio($id_articulo){
-		$this->db->select('costo_venta');		
-		$this->db->where('id_articulo', $id_articulo);
+		$this->db->select('costo_venta');
+		$this->db->where('id', $id_articulo);
 		$res = $this->db->get('articulos');
-		$precio = $res->result()[0]->costo_venta;		
+		$precio = $res->result()[0]->costo_venta;
 		return $precio;
+	}
+
+	function existenciaStock($id_art, $id_almacen){
+		$this->db->select('a.codigo, a.nombre, a.costo_venta, al.nombre as almacen, s.cantidad, s.id as id_stock');
+		$this->db->from('articulos a');
+		$this->db->join('stock s','a.id = s.id_articulo', 'inner');
+		$this->db->join('almacenes al','al.id = s.id_almacen', 'inner');
+		$this->db->where('s.id_articulo', $id_art);
+		$this->db->where('s.id_almacen', $id_almacen);
+		$res = $this->db->get();
+
+		return json_decode(json_encode($res->result()[0]),True);
 	}
 
 //

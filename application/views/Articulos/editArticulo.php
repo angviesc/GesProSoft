@@ -59,7 +59,7 @@
 <?php if ($articulo[0]['id_articulo'] != null) { ?>
 
       <div class="input-field">
-        <input type="text" class="datepicker bloqueado" name="fecha_instalacion" id="fecha_instalacion" data-value="value="<?=$articulo[0]['fecha_instalacion']?>"" required>
+        <input type="text" class="datepicker bloqueado" name="fecha_instalacion" id="fecha_instalacion" data-value="<?=$articulo[0]['fecha_instalacion']?>" required>
         <label for="fecha_instalacion">Fecha de instalacion</label>
       </div>
 

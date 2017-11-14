@@ -134,7 +134,7 @@ $('.delete-renglon').click(function(){
 
 //$('.selecArt').
 
-$('tbody').on('change','.contador_inv',function(){  
+$('tbody').on('change','.contador_inv',function(){
   var total = 0;
   $('.contador_inv').each(function(){
     total += parseInt($(this).val());
@@ -143,46 +143,52 @@ $('tbody').on('change','.contador_inv',function(){
 });
 
 $('#btn-add-art').click(function(){
-  $('#tabla-dinamica tbody ').append('<tr><td><select class="selectArt" name="">'
+  $('#tabla-dinamica tbody ').append('<tr><td><select class="selectArt" name="id_articulo[]">'
     +$('#drop_art').val()
     +'</select></td><td></td><td></td><td></td><td></td></tr>');
   $('select').material_select();
 });
 
 $('tbody').on('change','.selectArt',function(){
-  if ($(this).val() != ''){    
-  var index = $(this).parent().parent().parent().index();  
+  if ($(this).val() != ''){
+  var index = $(this).parent().parent().parent().index();
   var id_art = $(this).val();
-  
+
     var php = $('#site_url').val()+'/Sistemactrl/cargarUb/';
     $.post( php, {id_art : id_art},
-      function(data){                
+      function(data){
         $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).html(data);
         $('select').material_select();
       }
     );
+
+    $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(2).html('');
+    $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html('');
+    $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(4).html('');
+
+
 //$('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).text('Aqui');
   //.children('td').text('Aqui');
   }
 });
 $('tbody').on('change','.selectAlm',function(){
-  if ($(this).val() != ''){    
+  if ($(this).val() != ''){
   var index = $(this).parent().parent().parent().index();
   var id_alm = $(this).val();
   var id_art = $('#tabla-dinamica tbody').children('tr').eq(index).children('td').find('.selectArt select').val();
-  
+
     var php = $('#site_url').val()+'/Sistemactrl/cargarPrecio/';
     $.post( php, {id_art : id_art},
-      function(data){     
-        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html(data);           
+      function(data){
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html(data);
       }
     );
-/*
-    */
+
         var php = $('#site_url').val()+'/Sistemactrl/cargarExistencias/';
     $.post( php, {id_art : id_art, id_alm : id_alm},
-      function(data){     
-        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(4).html(data);           
+      function(data){
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(4).html(data);
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(2).html('<input type="number" name="cantidad[]" min = "0" max = "'+data+'" >');
       }
     );
 
