@@ -33,7 +33,7 @@
         <input type="hidden" name="id_articulo[]" value="<?=$articulo['id_articulo']?>">
         <input type="hidden" name="id_almacen[]" value="<?=$articulo['id_almacen']?>">
         <input type="hidden" name="costo_venta[]" value="<?=$articulo['costo_venta']?>">
-        <input type="hidden" name="cantidad_stock[]" value="<?=$articulo['cantidad']?>">
+        <input type="hidden" name="cantidad_stock[]" value="<?=$articulo['cantidad']?>">        
 
         <input type="hidden" name="id_stock[]" value="<?=$articulo['id_stock']?>">
         <input type="hidden" name="cantidad_venta[]" value="<?=$articulo['venta']?>">

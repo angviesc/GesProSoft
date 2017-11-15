@@ -544,6 +544,7 @@ class Modeloctrl extends CI_Model{
 		$this->db->select('id_almacen, nombre');
 		$this->db->join('almacenes a', 'a.id = s.id_almacen','inner');
 		$this->db->where('id_articulo',$id);
+		$this->db->where('s.cantidad >', 0);
 		$res = $this->db->get('stock s');
 
 		return json_decode(json_encode($res->result()),True);
@@ -578,6 +579,109 @@ class Modeloctrl extends CI_Model{
 		return json_decode(json_encode($res->result()[0]),True);
 	}
 
+	function insertVenta($venta){
+		$this->db->set($venta);
+		$this->db->insert('ventas');
+
+		$id = $this->db->query('SELECT @@identity AS id');
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Alta',
+			'tabla' => 'ventas');
+			$bitacora['registro'] = $id[0]->id;
+			$this->insertBitacora($bitacora);
+		}
+
+		return $id[0]->id;
+	}
+
+	function registrarArticulos($artculos){
+		foreach ($artculos as $articulo) {
+			$this->db->set($articulo);
+			$this->db->insert('articulos_vendidos');
+
+			$id = $this->db->query('SELECT @@identity AS id');
+			if ($id->num_rows() == 1 ){
+				$id = $id->result();
+				$bitacora = array('usuario' => $this->session->userdata('user'),
+				'accion' => 'Alta',
+				'tabla' => 'articulos_vendidos');
+				$bitacora['registro'] = $id[0]->id;
+				$this->insertBitacora($bitacora);
+			}
+		}
+	}
+
+	function updateStock($stock){
+		foreach ($stock as $actualizacion) {
+			$this->db->set('cantidad', 'cantidad-'.$actualizacion['cantidad'], FALSE);
+			$this->db->where('id',$actualizacion['id_stock']);
+			$this->db->update('stock');
+
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Actualizar',
+			'tabla' => 'stock');
+			$bitacora['registro'] = $actualizacion['id_stock'];
+			$this->insertBitacora($bitacora);
+		}
+	}
+
+	function consultStock($id){
+		$this->db->select('a.codigo, a.nombre, al.nombre as almacen, s.*');
+		$this->db->join('articulos a', 's.id_articulo = a.id', 'left');
+		$this->db->join('almacenes al', 's.id_almacen = al.id', 'inner');
+		$this->db->where('id_almacen',$id);
+		//$this->db->where('s.cantidad >',0);
+		$res = $this->db->get('stock s');
+
+		return json_decode(json_encode($res->result()),True);
+	}
+
+	function transferirStock($stock){
+
+		$this->db->where('id',$stock['id_stock']);
+		$res = $this->db->get('stock');
+		$get_stock = $res->result();
+
+		if ($get_stock != null) {
+			$this->db->where('id_almacen',$stock['alm_dest']);
+			$this->db->where('id_articulo',$get_stock[0]->id_articulo);
+			$res = $this->db->get('stock');
+			$res = $res->result();
+
+			if ($res == null){
+				$insert = array('id_articulo' => $get_stock[0]->id_articulo,
+				 							 'id_almacen' => $stock['alm_dest'],
+											 'cantidad' => $stock['cantidad'] );
+				$this->db->set($insert);
+				$this->db->insert('stock');
+
+			}else{
+				$this->db->set('cantidad','cantidad + '.$stock['cantidad'], false);
+				$this->db->where('id_almacen',$res[0]->id_almacen);
+				$this->db->where('id_articulo',$res[0]->id_articulo);
+				$this->db->update('stock');
+
+			}
+
+			$this->db->set('cantidad','cantidad - '.$stock['cantidad'], false);
+			$this->db->where('id',$stock['id_stock']);
+			$this->db->update('stock');
+		}
+
+	}
+
+	function selectPedidos(){
+		$this->db->select('p.nombre_proveedor as nn, pd.*');
+		$this->db->join('proveedores p','p.id = pd.id_proveedor', 'inner');
+		$res = $this->db->get('pedidos pd');
+		$res = $res->result();
+
+		return json_decode(json_encode($res),True);
+
+	}
+
 //
 
 	function insertBitacora($bitacora){
@@ -585,6 +689,7 @@ class Modeloctrl extends CI_Model{
 		 $this->db->set($bitacora);
 		 $this->db->insert('bitacora');
 	}
+
 
 
 

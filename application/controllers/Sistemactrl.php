@@ -13,12 +13,12 @@ class Sistemactrl extends CI_Controller {
                                       'Ver Articulos' => site_url('Sistemactrl/verArticulos'),
                                       'Ver inventario' => site_url('Sistemactrl/verInentario'),
                                       'divider',
-                                      'Abrir lista de pedidos' => site_url('Sistemactrl/SinFuncion'),
+                                      'Abrir lista de pedidos' => site_url('Sistemactrl/verPedidos'),
                                       'divider',
                                       'Vender stock' => array( 'popUp' => site_url('Sistemactrl/venderStock/1')),
                                       'Recibir stock' => site_url('Sistemactrl/SinFuncion'),
                                       'Pedir stock' => site_url('Sistemactrl/SinFuncion'),
-                                      'Transferir stock' => site_url('Sistemactrl/SinFuncion')),
+                                      'Transferir stock' => site_url('Sistemactrl/transferirStock')),
                                 'Departamentos' => array(
                                       'Nuevo Departamento' => array( 'popUp' => site_url('Sistemactrl/nuevoDpto/1')),
                                       'Ver lista de departamentos' => site_url('Sistemactrl/verDpto')),
@@ -855,6 +855,27 @@ public function eliminarCliente(){
   redirect('Sistemactrl/verClientes/DELETE_OK','refresh');
 }
 
+public function verPedidos(){
+
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $data['pedidos'] = $this->modeloctrl->selectPedidos();
+
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    $this->load->view('Pedidos/verPedidos',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+
+}
+
 public function venderStock(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
     $data['sed'] = array('sed' => $this->uri->segment(3));
@@ -938,12 +959,14 @@ public function previsualizarVenta(){
   $articulos_vendidos = array();
 
   for ($i=0; $i < count($articulos) ; $i++) {
-    if (isset($articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]])){
-      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['cantidad'] += $cantidades[$i];
-    }else{
-      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['id_articulo'] =  $articulos[$i];
-      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['id_almacen'] = $almacenes[$i] ;
-      $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['cantidad'] = $cantidades[$i];
+    if (isset($almacenes[$i])){
+      if (isset($articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]])){
+        $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['cantidad'] += $cantidades[$i];
+      }else{
+        $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['id_articulo'] =  $articulos[$i];
+        $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['id_almacen'] = $almacenes[$i] ;
+        $articulos_vendidos[$articulos[$i].'-'.$almacenes[$i]]['cantidad'] = $cantidades[$i];
+      }
     }
   }
 
@@ -960,8 +983,10 @@ public function previsualizarVenta(){
 
   $cliente = $this->modeloctrl->consultCliente($venta['id_cliente']);
 
-  $venta['nombre_cliente'] = $cliente[0]['nombre_cliente'] ;
-
+  if ($cliente != null)
+    $venta['nombre_cliente'] = $cliente[0]['nombre_cliente'] ;
+  else
+    $venta['nombre_cliente'] = '';
 
   $data['venta'] = $venta;
   $data['articulos'] = $venta_articulos;
@@ -1035,11 +1060,127 @@ public function insertarVenta(){
     $this->load->view('pie');
 
   } else{
-    echo "<pre>";    print_r($this->input->post());    exit;
+    //echo "<pre>";    print_r($this->input->post());
+    $venta = array('nombre_venta'=> $this->input->post('nombre_venta'),
+                   'id_cliente' => $this->input->post('id_cliente'),
+                   'nota' => $this->input->post('nota'),
+                   'fecha_venta' =>$this->input->post('fecha_venta_submit'));
+
+
+    $artculos = array();
+
+    $id = $this->modeloctrl->insertVenta($venta);
+
+    $id_articulo = $this->input->post('id_articulo');
+    $costo_venta = $this->input->post('costo_venta');
+
+    for ($i=0; $i < count($id_articulo) ; $i++) {
+      array_push($artculos,array('id_articulo' => $id_articulo[$i],
+                                 'precio_venta' => $costo_venta[$i],
+                                 'id_venta' => $id));
+    }
+
+    $this->modeloctrl->registrarArticulos($artculos);
+
+    $updateStock = array();
+
+    $id_stock = $this->input->post('id_stock');
+    $cantidad_venta = $this->input->post('cantidad_venta');
+
+    for ($i=0; $i < count($id_stock) ; $i++) {
+      array_push($updateStock,array('id_stock' => $id_stock[$i],
+                                 'cantidad' => $cantidad_venta[$i]));
+    }
+
+
+    $this->modeloctrl->updateStock($updateStock);
+
+    echo '<script language="javascript">
+    window.close();
+    </script>';
 
   }
 
 }
+
+public function transferirStock(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
+
+    $almacenes = $this->modeloctrl->selectAlm();
+
+    if ($almacenes == null) {
+      $data['selectAlm'] = '<option value="" disabled selected>Sin Almacenes registrados</option>';
+    }else{
+      $data['selectAlm'] = '<option value="" disabled selected>Elige un almacen</option>';
+      foreach ($almacenes as $almacen) {
+        $data['selectAlm'] .= '<option value="'.$almacen['id'].'">'.$almacen['nombre'].'</option>';
+      }
+    }
+
+    $this->load->view('encabezado');
+    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    $this->load->view('Stock/tranStock',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function cargarStock(){
+  $id = $this->input->post('id_alm');
+  $data['stock'] = $this->modeloctrl->consultStock($id);
+
+  //print_r($data['stock']);
+
+  $this->load->view('Stock/stockUb',$data);
+  //echo "<pre>";  print_r($stock);  exit;
+
+}
+
+public function updateStock(){
+  $this->modeloctrl->transferirStock($this->input->post());
+}
+
+public function nuevoPedido(){
+
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
+
+    $articulos = $this->modeloctrl->selectArt();
+
+    if ($articulos == null) {
+      $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
+    }else{
+      $data['selectArt'] = '<option value="" disabled selected>Elige un articulo</option>';
+      foreach ($articulos as $articulo) {
+        $data['selectArt'] .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+      }
+    }
+
+    $clientes = $this->modeloctrl->selectClientes();
+
+    if ($clientes == null) {
+      $data['selectCli'] = '<option value="" disabled selected>Sin clientes registrados</option>';
+    }else{
+      $data['selectCli'] = '<option value="" disabled selected>Elige un cliente</option>';
+      foreach ($clientes as $cliente) {
+        $data['selectCli'] .= '<option value="'.$cliente['id'].'">'.$cliente['nombre_cliente'].'</option>';
+      }
+    }
+
+    $this->load->view('encabezado');
+    $this->load->view('Pedidos/nuevoPedido',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+
+}
+
+
+
+
 
 function test(){
 

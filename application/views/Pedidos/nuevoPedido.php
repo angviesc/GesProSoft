@@ -1,7 +1,7 @@
 <div class="container">
   <?= form_open('Sistemactrl/previsualizarVenta','',$sed)?>
 
-  <h4>Vender Stock</h4>
+  <h4>Nuevo pedido</h4>
 
   <div class="input-field">
     <input type="text" name="nombre_venta" id="nombre_venta" required>
@@ -12,12 +12,12 @@
     <select name="id_cliente">
       <?=$selectCli?>
     </select>
-    <label >Cliente:</label>
+    <label >Proveedor:</label>
   </div>
 
   <div class="input-field">
     <input type="text" class="datepicker" name="fecha_venta" id="fecha_venta" required>
-    <label for="fecha_venta" name="test">Fecha de venta</label>
+    <label for="fecha_venta" name="test">Fecha estimada de recibo</label>
   </div>
 
   <h5>Articulos</h5>
@@ -25,10 +25,9 @@
     <thead>
       <tr>
         <th width = "30%">Articulo(Codigo)</th>
-        <th width = "30%">Ubicación</th>
-        <th width = "15%">Cant. Venta</th>
-        <th width = "15%">Precio</th>
-        <th width = "10%">Cant. Stock</th>
+        <th width = "30%">Cantidad</th>
+        <th width = "15%">Valor Unitario</th>
+        <th width = "15%">Total</th>
       </tr>
     </thead>
     <tbody>
@@ -38,7 +37,6 @@
             <?=$selectArt?>
           </select>
         </td>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -54,10 +52,7 @@
     </tfoot>
   </table>
 
-  <div class="input-field">
-    <textarea name="nota" id="nota" class="materialize-textarea" rows="4" cols="80"></textarea>
-    <label for="nota">Nota:</label>
-  </div>
+  <h5>Total:</h5>
 
   <div class="row">
     <?= form_submit('submitGua','Previsualizar Venta','class="col s6 btn waves-effect green darken-3"')?>

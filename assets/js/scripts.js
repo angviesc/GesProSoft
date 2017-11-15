@@ -43,6 +43,7 @@ $('#ctrl-active').click(function(){
   $('select').material_select();
 });
 
+
 $('tbody').on('click','tr',function (){
   //alert()
 
@@ -57,6 +58,8 @@ $('tbody').on('click','tr',function (){
 
   $('#id_activo').val($(this).children('input').val());
 });
+
+
 
 $('#id_departamento').change(function(){
   var idpto = $('#id_departamento').val();
@@ -171,18 +174,19 @@ $('tbody').on('change','.selectArt',function(){
   //.children('td').text('Aqui');
   }
 });
+
 $('tbody').on('change','.selectAlm',function(){
   if ($(this).val() != ''){
   var index = $(this).parent().parent().parent().index();
   var id_alm = $(this).val();
   var id_art = $('#tabla-dinamica tbody').children('tr').eq(index).children('td').find('.selectArt select').val();
 
-    var php = $('#site_url').val()+'/Sistemactrl/cargarPrecio/';
-    $.post( php, {id_art : id_art},
-      function(data){
-        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html(data);
-      }
-    );
+  var php = $('#site_url').val()+'/Sistemactrl/cargarPrecio/';
+  $.post( php, {id_art : id_art},
+    function(data){
+      $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html(data);
+    }
+  );
 
         var php = $('#site_url').val()+'/Sistemactrl/cargarExistencias/';
     $.post( php, {id_art : id_art, id_alm : id_alm},
@@ -191,11 +195,46 @@ $('tbody').on('change','.selectAlm',function(){
         $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(2).html('<input type="number" name="cantidad[]" min = "0" max = "'+data+'" >');
       }
     );
-
-//$('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).text('Aqui');
-  //.children('td').text('Aqui');
   }
 });
+
+$('#selectStock').change(function(){
+  var id_alm = $(this).val();
+
+  var php = $('#site_url').val()+'/Sistemactrl/cargarStock/';
+  $.post( php, {id_alm : id_alm},
+    function(data){
+      $('#stockOrigen').html(data);
+    }
+  );
+});
+
+$('#btn-stock').click(function(){
+  var index = $('tbody tr .active-bio').parent('tr').index();
+  var id_stock = $('tbody tr').eq(index).children('input').val();
+  var cantidad = $('#cant-trans').val();
+  var alm_dest = $('#alm_dest').val();
+
+  if (alm_dest != null) {
+    var php = $('#site_url').val()+'/Sistemactrl/updateStock/';
+    $.post( php, {id_stock : id_stock, cantidad : cantidad, alm_dest : alm_dest},
+      function(data){
+        //alert(data)
+      }
+    );
+
+    var id_alm = $('#selectStock').val();
+
+    var php = $('#site_url').val()+'/Sistemactrl/cargarStock/';
+    $.post( php, {id_alm : id_alm},
+      function(data){
+        $('#stockOrigen').html(data);
+      }
+    );
+  }
+
+});
+
 
 
 //Inizializando elementos
