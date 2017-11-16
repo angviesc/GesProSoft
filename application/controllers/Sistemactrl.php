@@ -17,7 +17,7 @@ class Sistemactrl extends CI_Controller {
                                       'divider',
                                       'Vender stock' => array( 'popUp' => site_url('Sistemactrl/venderStock/1')),
                                       'Recibir stock' => site_url('Sistemactrl/SinFuncion'),
-                                      'Pedir stock' => site_url('Sistemactrl/nuevoPedido/1'),
+                                      'Pedir stock' => array( 'popUp' => site_url('Sistemactrl/nuevoPedido/1')),
                                       'Transferir stock' => site_url('Sistemactrl/transferirStock')),
                                 'Departamentos' => array(
                                       'Nuevo Departamento' => array( 'popUp' => site_url('Sistemactrl/nuevoDpto/1')),
@@ -1337,7 +1337,7 @@ public function insertarPedido(){
 }
 
 public function recibirPedido(){
-  
+
   $articulos = $this->modeloctrl->consultArtPedidos($this->input->post('id_pedido'));
 
   $push = array();
@@ -1345,9 +1345,9 @@ public function recibirPedido(){
     array_push($push,array('id_articulo' => $artculo['id_articulo'],
                             'cantidad' => $artculo['cantidad']));
   }
-  print_r($push);
 
-
+  $this->modeloctrl->updateStockPush($push);
+  $this->modeloctrl->checkPedido($this->input->post('id_pedido'));
 
 }
 

@@ -740,6 +740,12 @@ class Modeloctrl extends CI_Model{
 		}
 	}
 
+	public function checkPedido($id){
+		$this->db->set('status',1);
+		$this->db->where('id',$id);
+		$this->db->update('pedidos');
+	}
+
 
 
 

@@ -130,6 +130,26 @@ $('#tb_inventario').on('click','tr',function (){
   //$('#id_activo').val($(this).children('input').val());
 });
 
+$('tbody').on('click','tr',function (){
+
+  $('td').removeClass( "active-bio" );  
+
+  if ($(this).children('input[name=status]').val() == 0)
+    $('a').removeClass(' disabled');
+  else{
+    $('#btn-recibe').addClass('disabled');
+    $('#btn-delete-pedido').addClass('disabled');
+  }
+
+  if ($(this).children('input[name=id_tipo]').val() == 1){
+    $('#eliminarBio').addClass('disabled');
+  }
+
+  $(this).children('td').addClass( "active-bio" );
+
+  $('#id_activo').val($(this).children('input').val());
+});
+
 $('.delete-renglon').click(function(){
   $('#tabla-dinamica').append('<input type="hidden" name="id_area_delete[]" value="'+$('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).children('input').val()+'" />')
   $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
@@ -276,7 +296,7 @@ $('tbody').on('change','.cant-compra',function(){
 
 $('#btn-recibe').click(function(){
   var id_pedido = $("#id_activo").val();
-  var php = $('#link').val()+'/recibirPedido/';    
+  var php = $('#link').val()+'/recibirPedido/';
   $.post( php, {id_pedido : id_pedido},
     function(data){
       alert(data);

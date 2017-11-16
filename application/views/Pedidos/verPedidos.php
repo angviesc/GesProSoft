@@ -8,7 +8,7 @@
     <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarAlm" id="test">Editar<i class="material-icons right">edit</i></a>
     -->
     <a href="#" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="btn-recibe" id="btn-recibe">Recibir Pedido<i class="material-icons right">edit</i></a>
-    <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
+    <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="btn-delete-pedido">Eliminar<i class="material-icons right">delete</i></a>
   </div>
   <table class="bordered highlight">
     <thead>
@@ -22,12 +22,13 @@
         <th>Status</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="tabla-pedidos">
       <?php
       $x = 0;
        foreach ($pedidos as $pedido) { ?>
         <tr>
           <?=form_hidden('id_us',$pedido['id']) ?>
+          <?=form_hidden('status',$pedido['status']) ?>
           <td><?=++$x?></td>
           <td><?=$pedido['fecha_emision']?></td>
           <td><?=$pedido['fecha_llegada']?></td>
