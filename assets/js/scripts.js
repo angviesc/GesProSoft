@@ -235,6 +235,61 @@ $('#btn-stock').click(function(){
 
 });
 
+$('#btn-add-art').click(function(){
+  $('#tabla-dinamica tbody ').append('<tr><td><select class="selectArt" name="id_articulo[]">'
+    +$('#drop_art').val()
+    +'</select></td><td></td><td></td><td></td><td></td></tr>');
+  $('select').material_select();
+});
+
+$('#btn-add-ped').click(function(){
+  $('#tabla-dinamica tbody ').append('<tr><td><select class="selectArtMul" name="id_articulo[]">'
+    +$('#drop_art').val()
+    +'</select></td>'
+    +'<td><input type="number" name="cantidad[]" min="0" class="cant-compra"></td>'
+    +'<td></td><td></td></tr>');
+  $('select').material_select();
+});
+
+$('tbody').on('change','.selectArtMul',function(){
+  if ($(this).val() != ''){
+  var index = $(this).parent().parent().parent().index();
+  var id_art = $(this).val();
+
+    var php = $('#site_url').val()+'/Sistemactrl/cargaPrecio/';
+    $.post( php, {id_art : id_art},
+      function(data){
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(2).html(data);
+      }
+    );
+    $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html('');
+  }
+});
+
+$('tbody').on('change','.cant-compra',function(){
+  var index = $(this).parent().parent().index();
+  var cant = $(this).val();
+  var precio = $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(2).text();
+
+  $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).text(cant*precio.replace("$", ""));
+});
+
+$('#btn-recibe').click(function(){
+  var id_pedido = $("#id_activo").val();
+  var php = $('#link').val()+'/recibirPedido/';    
+  $.post( php, {id_pedido : id_pedido},
+    function(data){
+      alert(data);
+      location.reload();
+      //window.opener.document.location="verPedidos/INSERT_OK"
+    }
+  );
+
+  /*
+
+  */
+});
+
 
 
 //Inizializando elementos

@@ -28,7 +28,7 @@
           <td><?=++$x?></td>
           <td><?=$articulo['codigo']?></td>
           <td><?=$articulo['articulo']?></td>
-          <td></td>
+          <td><?=$articulo['departamento']?></td>
           <td><?=$articulo['almacen']?></td>
           <td><?=$articulo['cantidad']?></td>
         </tr>

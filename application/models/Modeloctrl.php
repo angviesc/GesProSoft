@@ -130,7 +130,6 @@ class Modeloctrl extends CI_Model{
 	}
 
 	function consultArt($id){
-
 		$this->db->where('id', $id);
 		$this->db->join('articulo_unico au', 'a.id = au.id_articulo', 'LEFT');
 		$res = $this->db->get('articulos a');
@@ -182,10 +181,12 @@ class Modeloctrl extends CI_Model{
 // Stock
 
 	function selectStock(){
-		$this->db->select('a.codigo, a.nombre as articulo, al.nombre as almacen, s.cantidad');
+		$this->db->select('a.codigo, a.nombre as articulo, al.nombre as almacen, d.nombre as departamento, s.cantidad');
 		$this->db->from('stock s');
-		$this->db->join('articulos a','s.id_articulo = a.id' ,'inner');
-		$this->db->join('almacenes al', 's.id_almacen = al.id', 'inner');
+		$this->db->join('articulos a','s.id_articulo = a.id' ,'left');
+		$this->db->join('almacenes al', 's.id_almacen = al.id', 'left');
+		$this->db->join('departamentos d', 'a.id_departamento = d.id', 'left');
+		$this->db->where('s.cantidad >',0);
 		//$this->db->join('articulo_unico au', 's.id_articulo = au.id_articulo', 'left');
 
 		$res = $this->db->get();
@@ -591,9 +592,8 @@ class Modeloctrl extends CI_Model{
 			'tabla' => 'ventas');
 			$bitacora['registro'] = $id[0]->id;
 			$this->insertBitacora($bitacora);
+			return $id[0]->id;
 		}
-
-		return $id[0]->id;
 	}
 
 	function registrarArticulos($artculos){
@@ -632,7 +632,7 @@ class Modeloctrl extends CI_Model{
 		$this->db->join('articulos a', 's.id_articulo = a.id', 'left');
 		$this->db->join('almacenes al', 's.id_almacen = al.id', 'inner');
 		$this->db->where('id_almacen',$id);
-		//$this->db->where('s.cantidad >',0);
+		$this->db->where('s.cantidad >',0);
 		$res = $this->db->get('stock s');
 
 		return json_decode(json_encode($res->result()),True);
@@ -673,14 +673,76 @@ class Modeloctrl extends CI_Model{
 	}
 
 	function selectPedidos(){
-		$this->db->select('p.nombre_proveedor as nn, pd.*');
-		$this->db->join('proveedores p','p.id = pd.id_proveedor', 'inner');
-		$res = $this->db->get('pedidos pd');
+		$this->db->select('SUM(a.cantidad * a.precio_compra) as total, p.nombre_proveedor as proveedor, pd.*');
+		$this->db->from('pedidos pd');
+		$this->db->join('articulos_pedidos a','pd.id = a.id_pedido', 'left');
+		$this->db->join('proveedores p','pd.id_proveedor = p.id', 'left');
+		$this->db->group_by("a.id_pedido");
+		$this->db->order_by("pd.id");
+
+		$res = $this->db->get();
 		$res = $res->result();
 
 		return json_decode(json_encode($res),True);
 
 	}
+
+
+
+	function selectArtMultiples(){
+		$res = $this->db->query('SELECT id, codigo FROM articulos WHERE id NOT IN (SELECT id_articulo FROM articulo_unico)');
+		return json_decode(json_encode($res->result()), True);
+	}
+
+	function insertPedido($pedido){
+		$this->db->set($pedido);
+		$this->db->insert('pedidos');
+
+		$id = $this->db->query('SELECT @@identity AS id');
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Alta',
+			'tabla' => 'pedidos');
+			$bitacora['registro'] = $id[0]->id;
+			$this->insertBitacora($bitacora);
+			return $id[0]->id;
+		}
+	}
+
+	function registrarArtPedido($artculos){
+		foreach ($artculos as $articulo) {
+			$this->db->set($articulo);
+			$this->db->insert('articulos_pedidos');
+		}
+	}
+
+	public function consultArtPedidos($id){
+		$this->db->where('id_pedido',$id);
+		$res = $this->db->get('articulos_pedidos');
+		return json_decode(json_encode($res->result()),True);
+	}
+
+	public function updateStockPush($articulos){
+		foreach ($articulos as $stock) {
+			$this->db->where('id_articulo',$stock['id_articulo']);
+			$this->db->where('id_almacen',1);
+			$get_stock = $this->db->get('stock');
+
+			if ($get_stock == null){
+				$this->db->set($stock);
+				$this->db->insert('stock');
+			}else{
+				$this->db->set('cantidad','cantidad + '.$stock['cantidad'], false);
+				$this->db->where('id',$get_stock->result()[0]->id);
+				$this->db->update('stock');
+			}
+		}
+	}
+
+
+
+
 
 //
 
@@ -689,6 +751,7 @@ class Modeloctrl extends CI_Model{
 		 $this->db->set($bitacora);
 		 $this->db->insert('bitacora');
 	}
+
 
 
 

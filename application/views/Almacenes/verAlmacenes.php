@@ -20,6 +20,7 @@
        foreach ($almacenes as $almacen) { ?>
          <tr>
            <?=form_hidden('id_us',$almacen['id']) ?>
+           <?=($almacen['id']==1)? form_hidden('id_tipo',1) : '' ?>
            <td><?=++$x?></td>
            <td><?=$almacen['nombre']?></td>
            <td><?=$almacen['ubicacion']?></td>

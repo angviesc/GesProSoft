@@ -17,7 +17,7 @@ class Sistemactrl extends CI_Controller {
                                       'divider',
                                       'Vender stock' => array( 'popUp' => site_url('Sistemactrl/venderStock/1')),
                                       'Recibir stock' => site_url('Sistemactrl/SinFuncion'),
-                                      'Pedir stock' => site_url('Sistemactrl/SinFuncion'),
+                                      'Pedir stock' => site_url('Sistemactrl/nuevoPedido/1'),
                                       'Transferir stock' => site_url('Sistemactrl/transferirStock')),
                                 'Departamentos' => array(
                                       'Nuevo Departamento' => array( 'popUp' => site_url('Sistemactrl/nuevoDpto/1')),
@@ -865,6 +865,7 @@ public function verPedidos(){
                   'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
     $data['pedidos'] = $this->modeloctrl->selectPedidos();
+    //echo "<pre>";    print_r($data['pedidos']);    exit;
 
     $this->load->view('encabezado');
     echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
@@ -1053,6 +1054,17 @@ public function insertarVenta(){
       }
     }
 
+    $articulos = $this->modeloctrl->selectArt();
+
+    if ($articulos == null) {
+      $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
+    }else{
+      $data['selectArt'] = '<option value="" disabled selected>Elige un articulo</option>';
+      foreach ($articulos as $articulo) {
+        $data['selectArt'] .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+      }
+    }
+
     $data['editVenta'] = $editVenta;
 
     $this->load->view('encabezado');
@@ -1147,7 +1159,7 @@ public function nuevoPedido(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
     $data['sed'] = array('sed' => $this->uri->segment(3));
 
-    $articulos = $this->modeloctrl->selectArt();
+    $articulos = $this->modeloctrl->selectArtMultiples();
 
     if ($articulos == null) {
       $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
@@ -1158,14 +1170,14 @@ public function nuevoPedido(){
       }
     }
 
-    $clientes = $this->modeloctrl->selectClientes();
+    $proveedores = $this->modeloctrl->selectProv();
 
-    if ($clientes == null) {
-      $data['selectCli'] = '<option value="" disabled selected>Sin clientes registrados</option>';
+    if ($proveedores == null) {
+      $data['selectProv'] = '<option value="" disabled selected>Sin proveedores registrados</option>';
     }else{
-      $data['selectCli'] = '<option value="" disabled selected>Elige un cliente</option>';
-      foreach ($clientes as $cliente) {
-        $data['selectCli'] .= '<option value="'.$cliente['id'].'">'.$cliente['nombre_cliente'].'</option>';
+      $data['selectProv'] = '<option value="" disabled selected>Elige un proveedor</option>';
+      foreach ($proveedores as $proveedor) {
+        $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
       }
     }
 
@@ -1178,16 +1190,165 @@ public function nuevoPedido(){
 
 }
 
+public function cargaPrecio(){
+
+  $precio = $this->modeloctrl->consultaPrecio($this->input->post('id_art'));
+  echo '$'.$precio;
+
+}
+
+public function previsualizarPedido(){
+
+  $data['sed'] = array('sed' => $this->input->post('sed'));
+
+  $pedido = array('nombre_pedido' => $this->input->post('nombre_pedido'),
+                  'id_proveedor' => $this->input->post('id_proveedor'),
+                  'fecha_llegada' => $this->input->post('fecha_llegada_submit') );
+
+  $articulos = $this->input->post('id_articulo');
+  $cantidad = $this->input->post('cantidad');
 
 
 
+  $articulos_pedidos = array();
 
-function test(){
+  for ($i=0; $i < count($articulos) ; $i++) {
+    $precio = $this->modeloctrl->consultaPrecio($articulos[$i]);
+    $articulo = $this->modeloctrl->consultArt($articulos[$i]);
+    $arreglo = array('id_articulo' => $articulos[$i],
+                     'nombre' => $articulo[0]['nombre'],
+                     'codigo' => $articulo[0]['codigo'],
+                     'cantidad' => $cantidad[$i],
+                     'precio_unitario' => $precio);
+    array_push($articulos_pedidos, $arreglo);
+  }
+
+
+  $proveedor = $this->modeloctrl->consultProv($pedido['id_proveedor']);
+  $data['proveedor'] = $proveedor[0]['nombre_proveedor'];
+
+  $data['pedido'] = $pedido;
+  $data['articulos_pedidos'] = $articulos_pedidos;
+
+  $this->load->view('encabezado');
+  $this->load->view('Pedidos/visualizarPedido',$data);
+  $this->load->view('pie');
+
+}
+
+public function insertarPedido(){
+
+  if ($this->input->post('submitEdit')){
+
+    $articulos = $this->modeloctrl->selectArtMultiples();
+
+    if ($articulos == null) {
+      $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
+    }else{
+      $data['selectArt'] = '<option value="" disabled selected>Elige un articulo</option>';
+      foreach ($articulos as $articulo) {
+        $data['selectArt'] .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+      }
+    }
+
+
+    $editPedido = $this->input->post();
+
+
+    $editPedido['selectArt'] = array();
+
+    foreach ($editPedido['id_articulo'] as $id) {
+
+      $articulos = $this->modeloctrl->selectArt();
+      if ($articulos == null) {
+        $selectArt = '<option value="" disabled selected>Sin articulos registrados</option>';
+      }else{
+        $selectArt = '<option value="" disabled selected>Elige un articulo</option>';
+        foreach ($articulos as $articulo) {
+          if ($id == $articulo['id'])
+            $selectArt .= '<option value="'.$articulo['id'].'" selected>'.$articulo['codigo'].'</option>';
+          else
+            $selectArt .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+        }
+      }
+      array_push($editPedido['selectArt'], $selectArt);
+    }
+
+
+    $proveedores = $this->modeloctrl->selectProv();
+
+    if ($proveedores == null) {
+      $data['selectProv'] = '<option value="" disabled selected>Sin proveedores registrados</option>';
+    }else{
+      $data['selectProv'] = '<option value="" disabled selected>Elige un proveedor</option>';
+      foreach ($proveedores as $proveedor) {
+        if ($editPedido['id_proveedor'] == $proveedor['id'])
+          $data['selectProv'] .= '<option value="'.$proveedor['id'].'" selected>'.$proveedor['nombre_proveedor'].'</option>';
+        else
+          $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
+      }
+    }
+
+    $data['editPedido'] = $editPedido;
+
+    $this->load->view('encabezado');
+    $this->load->view('Pedidos/editPedido',$data);
+    $this->load->view('pie');
+
+  } else{
+
+    $pedido = array('nombre_pedido' => $this->input->post('nombre_pedido'),
+                    'id_proveedor' => $this->input->post('id_proveedor'),
+                    'fecha_emision' => date("Y-m-d"),
+                    'fecha_llegada' => $this->input->post('fecha_llegada_submit'),
+                    'status' => 0);
+
+    $articulos_pedidos = array();
+
+    $id = $this->modeloctrl->insertPedido($pedido);
+
+    $articulos = $this->input->post('id_articulo');
+    $cantidad = $this->input->post('cantidad');
+    $costos = $this->input->post('costo_venta');
+
+    for ($i=0; $i < count($articulos) ; $i++) {
+      $arreglo = array('id_articulo' => $articulos[$i],
+      'cantidad' => $cantidad[$i],
+      'precio_compra' => $costos[$i],
+      'id_pedido' => $id);
+      array_push($articulos_pedidos, $arreglo);
+    }
+
+    $this->modeloctrl->registrarArtPedido($articulos_pedidos);
+
+    if ($this->input->post('sed')){
+      echo '<script language="javascript">
+      window.close();
+      </script>';
+    }else {
+      echo '<script language="javascript">
+      window.opener.document.location="verPedidos/INSERT_OK"
+      window.close();
+      </script>';
+    }
+
+  }
+
+}
+
+public function recibirPedido(){
+  
+  $articulos = $this->modeloctrl->consultArtPedidos($this->input->post('id_pedido'));
+
+  $push = array();
+  foreach ($articulos as $artculo) {
+    array_push($push,array('id_articulo' => $artculo['id_articulo'],
+                            'cantidad' => $artculo['cantidad']));
+  }
+  print_r($push);
 
 
 
-
-  print_r($this->input->post());
 }
 
 

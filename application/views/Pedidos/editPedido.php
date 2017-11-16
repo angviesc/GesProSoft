@@ -1,10 +1,10 @@
 <div class="container">
-  <?= form_open('Sistemactrl/previsualizarPedido','',$sed)?>
+  <?= form_open('Sistemactrl/previsualizarPedido','',$editPedido['sed'])?>
 
   <h4>Nuevo pedido</h4>
 
   <div class="input-field">
-    <input type="text" name="nombre_pedido" id="nombre_pedido" required>
+    <input type="text" name="nombre_pedido" id="nombre_pedido" value="<?=$editPedido['nombre_pedido']?>" required>
     <label for="nombre_pedido">Folio de seguimiento</label>
   </div>
 
@@ -16,7 +16,7 @@
   </div>
 
   <div class="input-field">
-    <input type="text" class="datepicker" name="fecha_llegada" id="fecha_llegada" required>
+    <input type="text" class="datepicker" data-value = "<?=$editPedido['fecha_llegada_submit']?>" name="fecha_llegada" id="fecha_llegada" required>
     <label for="fecha_llegada" name="test">Fecha estimada de recibo</label>
   </div>
 
@@ -31,16 +31,21 @@
       </tr>
     </thead>
     <tbody>
-      <tr >
-        <td>
-          <select class="selectArtMul" name="id_articulo[]">
-            <?=$selectArt?>
-          </select>
-        </td>
-        <td><input type="number" name="cantidad[]" min="0" class="cant-compra"></td>
-        <td></td>
-        <td></td>
-      </tr>
+        <?php $x = 0;
+        foreach ($editPedido['selectArt'] as $articulo){ ?>
+          <tr >
+            <td>
+              <select class="selectArtMul" name="id_articulo[]">
+                <?=$articulo?>
+              </select>
+            </td>
+            <td><input type="number" name="cantidad[]" value="<?=$editPedido['cantidad'][$x]?>" min="0" class="cant-compra"></td>
+            <td>$<?=$editPedido['costo_venta'][$x]?></td>
+            <td>$<?=$editPedido['total'][$x]?></td>
+          </tr>
+        <?php
+        $x++;
+        } ?>
     </tbody>
     <tfoot>
       <tr>

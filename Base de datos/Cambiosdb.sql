@@ -6,6 +6,9 @@ VALUES (1,'Administrador','Sistema','3 33 33 33', 'Calle numero 33', 'Colonia ta
 INSERT INTO usuarios (usuario, password, id_empleado, tipo)
 VALUES ('Admin',md5('pass'), 1, 1);
 
+INSERT INTO almacenes (id, nombre, ubicacion)
+VALUES (1,'Almacen Principal', 'Almacen donde llegan los pedidos');
+
 //Debería ir
 ALTER TABLE clientes ADD correo VARCHAR(40) NOT NULL AFTER activo;
 
@@ -26,6 +29,9 @@ ALTER TABLE `ventas` ADD `nota` TEXT NOT NULL AFTER `id_cliente`;
 ALTER TABLE `ventas` ADD `fecha_registro` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `fecha_venta`;
 
 ALTER TABLE `pedidos` ADD `status` INT NOT NULL AFTER `fecha_llegada`;
+
+ALTER TABLE `articulos_pedidos` ADD `cantidad` INT NOT NULL AFTER `id_articulo`;
+ALTER TABLE `articulos_pedidos` ADD `precio_compra` INT NOT NULL AFTER `cantidad`;
 
 /*ALTER TABLE `bitacora` ADD `val_ant` TEXT NOT NULL AFTER `registro`, ADD `val_act` TEXT NOT NULL AFTER `val_ant`;*/
 
