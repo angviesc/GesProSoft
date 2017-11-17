@@ -132,7 +132,7 @@ $('#tb_inventario').on('click','tr',function (){
 
 $('tbody').on('click','tr',function (){
 
-  $('td').removeClass( "active-bio" );  
+  $('td').removeClass( "active-bio" );
 
   if ($(this).children('input[name=status]').val() == 0)
     $('a').removeClass(' disabled');
@@ -271,6 +271,15 @@ $('#btn-add-ped').click(function(){
   $('select').material_select();
 });
 
+$('#btn-add-pedido').click(function(){
+  $('#tabla-dinamica tbody ').append('<tr ><td><select class="selectArtMul" name="id_articulo[]">'
+  +$('#drop_art').val()
+  +'</select></td><td><select class="selectAlmSto" name="id_almacen[]">'
+  +$('#drop_alm').val()
+  +'</select></td><td></td><td></td><td></td></tr>');
+  $('select').material_select();
+});
+
 $('tbody').on('change','.selectArtMul',function(){
   if ($(this).val() != ''){
   var index = $(this).parent().parent().parent().index();
@@ -283,6 +292,32 @@ $('tbody').on('change','.selectArtMul',function(){
       }
     );
     $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html('');
+  }
+});
+
+$('tbody').on('change','.selectAlmSto',function(){
+  if ($(this).val() != ''){
+  var index = $(this).parent().parent().parent().index();
+  var id_art = $('#tabla-dinamica tbody').children('tr').eq(index).children('td').find('.selectArtMul select').val();
+  if (id_art != null) {
+    var id_alm = $(this).val();
+
+    var php = $('#site_url').val()+'/Sistemactrl/cargarExistencias/';
+    $.post( php, {id_art : id_art, id_alm : id_alm},
+      function(data){
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html('<input type="number" name="cantidad[]" min = "0" >');
+        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(4).html(data);
+      }
+    );
+  }
+/*
+  var php = $('#site_url').val()+'/Sistemactrl/cargarPrecio/';
+  $.post( php, {id_art : id_art},
+    function(data){
+      $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html(data);
+    }
+  );
+*/
   }
 });
 
@@ -299,15 +334,10 @@ $('#btn-recibe').click(function(){
   var php = $('#link').val()+'/recibirPedido/';
   $.post( php, {id_pedido : id_pedido},
     function(data){
-      alert(data);
       location.reload();
       //window.opener.document.location="verPedidos/INSERT_OK"
     }
   );
-
-  /*
-
-  */
 });
 
 

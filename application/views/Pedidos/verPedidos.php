@@ -4,6 +4,7 @@
   </center>
   <div class="right-align">
     <?= anchor_popup('Sistemactrl/nuevoPedido', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
+    <?= anchor_popup('Sistemactrl/verPedido', 'Ver <i class="material-icons right">add</i>', $atts) ?>
     <!--
     <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarAlm" id="test">Editar<i class="material-icons right">edit</i></a>
     -->

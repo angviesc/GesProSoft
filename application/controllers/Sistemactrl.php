@@ -16,7 +16,7 @@ class Sistemactrl extends CI_Controller {
                                       'Abrir lista de pedidos' => site_url('Sistemactrl/verPedidos'),
                                       'divider',
                                       'Vender stock' => array( 'popUp' => site_url('Sistemactrl/venderStock/1')),
-                                      'Recibir stock' => site_url('Sistemactrl/SinFuncion'),
+                                      'Recibir stock' => array( 'popUp' => site_url('Sistemactrl/recibirStock/1')),
                                       'Pedir stock' => array( 'popUp' => site_url('Sistemactrl/nuevoPedido/1')),
                                       'Transferir stock' => site_url('Sistemactrl/transferirStock')),
                                 'Departamentos' => array(
@@ -1008,7 +1008,7 @@ public function insertarVenta(){
 
     foreach ($editVenta['id_articulo'] as $id) {
 
-      $articulos = $this->modeloctrl->selectArt();
+      $articulos = $this->modeloctrl->selectArtMultiples();
       if ($articulos == null) {
         $selectArt = '<option value="" disabled selected>Sin articulos registrados</option>';
       }else{
@@ -1037,7 +1037,6 @@ public function insertarVenta(){
         }
       }
       array_push($editVenta['selectAlm'], $dropselect);
-
     }
 
     $clientes = $this->modeloctrl->selectClientes();
@@ -1143,11 +1142,7 @@ public function cargarStock(){
   $id = $this->input->post('id_alm');
   $data['stock'] = $this->modeloctrl->consultStock($id);
 
-  //print_r($data['stock']);
-
   $this->load->view('Stock/stockUb',$data);
-  //echo "<pre>";  print_r($stock);  exit;
-
 }
 
 public function updateStock(){
@@ -1336,6 +1331,12 @@ public function insertarPedido(){
 
 }
 
+public function eliminarPedido(){
+  $this->modeloctrl->eliminarPedido($this->input->post('id_activo'));
+  redirect('sistemactrl/verPedidos/DELETE_OK','refresh');
+
+}
+
 public function recibirPedido(){
 
   $articulos = $this->modeloctrl->consultArtPedidos($this->input->post('id_pedido'));
@@ -1346,10 +1347,249 @@ public function recibirPedido(){
                             'cantidad' => $artculo['cantidad']));
   }
 
-  $this->modeloctrl->updateStockPush($push);
+  $this->modeloctrl->guardaStock($push);
   $this->modeloctrl->checkPedido($this->input->post('id_pedido'));
 
 }
+
+public function recibirStock(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $data['sed'] = array('sed' => $this->uri->segment(3));
+
+    $articulos = $this->modeloctrl->selectArtMultiples();
+
+    if ($articulos == null) {
+      $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
+    }else{
+      $data['selectArt'] = '<option value="" disabled selected>Elige un articulo</option>';
+      foreach ($articulos as $articulo) {
+        $data['selectArt'] .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+      }
+    }
+
+    $proveedores = $this->modeloctrl->selectProv();
+
+    if ($proveedores == null) {
+      $data['selectProv'] = '<option value="" disabled selected>Sin proveedores registrados</option>';
+    }else{
+      $data['selectProv'] = '<option value="" disabled selected>Elige un proveedor</option>';
+      foreach ($proveedores as $proveedor) {
+        $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
+      }
+    }
+
+    $almacenes = $this->modeloctrl->selectAlm();
+    if ($almacenes == null) {
+      $data['selectAlm'] = '<option value="" disabled selected style="margin-bottom: 1px;">Sin Almacenes registrados</option>';
+    }else{
+      $data['selectAlm'] = '<option value="" disabled selected>Selecciona un almacen</option>';
+      foreach ($almacenes as $almacen) {
+        $data['selectAlm'] .= '<option value="'.$almacen['id'].'">'.$almacen['nombre'].'</option>';
+      }
+    }
+
+    $this->load->view('encabezado');
+    $this->load->view('Pedidos/recibirPedido',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
+}
+
+public function prevPedido(){
+  $data['sed'] = array('sed' => $this->input->post('sed'));
+
+  $pedido = array('nombre_pedido' => $this->input->post('nombre_pedido'),
+                  'id_proveedor' => $this->input->post('id_proveedor'),
+                  'fecha_llegada' => $this->input->post('fecha_llegada_submit') );
+
+  $articulos = $this->input->post('id_articulo');
+  $cantidad = $this->input->post('cantidad');
+  $almacenes = $this->input->post('id_almacen');
+
+  $articulos_pedidos = array();
+
+  for ($i=0; $i < count($articulos) ; $i++) {
+    $precio = $this->modeloctrl->consultaPrecio($articulos[$i]);
+    $articulo = $this->modeloctrl->consultArt($articulos[$i]);
+    $almacen = $this->modeloctrl->consultAlm($almacenes[$i]);
+    $stock = $this->modeloctrl->consultaExistencias($almacenes[$i], $articulos[$i]);
+    $arreglo = array('id_articulo' => $articulos[$i],
+                     'nombre' => $articulo[0]['nombre'],
+                     'codigo' => $articulo[0]['codigo'],
+                     'cantidad' => $cantidad[$i],
+                     'stock' => $stock,
+                     'almacen' => $almacen[0]['nombre'],
+                     'id_almacen' => $almacenes[$i],
+                     'precio_unitario' => $precio);
+    array_push($articulos_pedidos, $arreglo);
+  }
+
+  $proveedor = $this->modeloctrl->consultProv($pedido['id_proveedor']);
+  //$data['proveedor'] = $proveedor[0]['nombre_proveedor'];
+
+  $data['pedido'] = $pedido;
+  $data['articulos_pedidos'] = $articulos_pedidos;
+
+  $this->load->view('encabezado');
+  $this->load->view('Pedidos/visualizarPed',$data);
+  $this->load->view('pie');
+}
+
+public function insertPedStock(){
+
+  if ($this->input->post('submitEdit')){
+
+    $articulos = $this->modeloctrl->selectArtMultiples();
+    if ($articulos == null) {
+      $data['selectArt'] = '<option value="" disabled selected>Sin articulos registrados</option>';
+    }else{
+      $data['selectArt'] = '<option value="" disabled selected>Elige un articulo</option>';
+      foreach ($articulos as $articulo) {
+        $data['selectArt'] .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+      }
+    }
+
+    $almacenes = $this->modeloctrl->selectAlm();
+    if ($almacenes == null) {
+      $data['selectAlm'] = '<option value="" disabled selected style="margin-bottom: 1px;">Sin Almacenes registrados</option>';
+    }else{
+      $data['selectAlm'] = '<option value="" disabled selected>Selecciona un almacen</option>';
+      foreach ($almacenes as $almacen) {
+        $data['selectAlm'] .= '<option value="'.$almacen['id'].'">'.$almacen['nombre'].'</option>';
+      }
+    }
+
+    $editPedido = $this->input->post();
+
+
+    $editPedido['selectArt'] = array();
+
+    foreach ($editPedido['id_articulo'] as $id) {
+
+      $articulos = $this->modeloctrl->selectArtMultiples();
+      if ($articulos == null) {
+        $selectArt = '<option value="" disabled selected>Sin articulos registrados</option>';
+      }else{
+        $selectArt = '<option value="" disabled selected>Elige un articulo</option>';
+        foreach ($articulos as $articulo) {
+          if ($id == $articulo['id'])
+            $selectArt .= '<option value="'.$articulo['id'].'" selected>'.$articulo['codigo'].'</option>';
+          else
+            $selectArt .= '<option value="'.$articulo['id'].'">'.$articulo['codigo'].'</option>';
+        }
+      }
+      array_push($editPedido['selectArt'], $selectArt);
+    }
+
+    $editPedido['selectAlm'] = array();
+
+    foreach ($editPedido['id_almacen'] as $id) {
+      $ubicacion = $this->modeloctrl->selectAlm();
+      if ($ubicacion == null) {
+        $dropselect = '<option value="" disabled selected>Sin existencias</option>';
+      }else{
+        $dropselect = '<option value="" disabled selected>Selecciona un almacen</option>';
+        foreach ($ubicacion as $area) {
+          if ($id == $area['id'])
+            $dropselect .= '<option value="'.$area['id'].'" selected>'.$area['nombre'].'</option>';
+          else
+            $dropselect .= '<option value="'.$area['id'].'">'.$area['nombre'].'</option>';
+        }
+      }
+      array_push($editPedido['selectAlm'], $dropselect);
+    }
+/*
+    $proveedores = $this->modeloctrl->selectProv();
+
+    if ($proveedores == null) {
+      $data['selectProv'] = '<option value="" disabled selected>Sin proveedores registrados</option>';
+    }else{
+      $data['selectProv'] = '<option value="" disabled selected>Elige un proveedor</option>';
+      foreach ($proveedores as $proveedor) {
+        if ($editPedido['id_proveedor'] == $proveedor['id'])
+          $data['selectProv'] .= '<option value="'.$proveedor['id'].'" selected>'.$proveedor['nombre_proveedor'].'</option>';
+        else
+          $data['selectProv'] .= '<option value="'.$proveedor['id'].'">'.$proveedor['nombre_proveedor'].'</option>';
+      }
+    }
+*/
+    $data['editPedido'] = $editPedido;
+
+    //echo "<pre>";    print_r($data['editPedido']);
+
+    $this->load->view('encabezado');
+    $this->load->view('Pedidos/recibirPedidoEdit',$data);
+    $this->load->view('pie');
+
+  } else{
+
+    //echo "guardar<pre>";    print_r($this->input->post());    exit;
+
+    $articulos = $this->input->post('id_articulo');
+    $cantidad = $this->input->post('cantidad');
+    $almacenes = $this->input->post('id_almacen');
+
+    $articulos_recibidos = array();
+
+    for ($i=0; $i < count($articulos) ; $i++) {
+      $arreglo = array('id_articulo' => $articulos[$i],
+      'id_almacen' => $almacenes[$i],
+      'cantidad' => $cantidad[$i]);
+      array_push($articulos_recibidos, $arreglo);
+    }
+
+    //echo "<pre>";    print_r($articulos_recibidos);    exit;
+
+    $this->modeloctrl->updateStockPush($articulos_recibidos);
+
+    echo '<script language="javascript">
+    window.close();
+    </script>';
+
+/*
+    $pedido = array('nombre_pedido' => $this->input->post('nombre_pedido'),
+                    'id_proveedor' => $this->input->post('id_proveedor'),
+                    'fecha_emision' => date("Y-m-d"),
+                    'fecha_llegada' => $this->input->post('fecha_llegada_submit'),
+                    'status' => 0);
+
+    $articulos_pedidos = array();
+
+    $id = $this->modeloctrl->insertPedido($pedido);
+
+    $articulos = $this->input->post('id_articulo');
+    $cantidad = $this->input->post('cantidad');
+    $costos = $this->input->post('costo_venta');
+
+    for ($i=0; $i < count($articulos) ; $i++) {
+      $arreglo = array('id_articulo' => $articulos[$i],
+      'cantidad' => $cantidad[$i],
+      'precio_compra' => $costos[$i],
+      'id_pedido' => $id);
+      array_push($articulos_pedidos, $arreglo);
+    }
+
+    $this->modeloctrl->registrarArtPedido($articulos_pedidos);
+
+    if ($this->input->post('sed')){
+    echo '<script language="javascript">
+    window.close();
+    </script>';
+  }else {
+  echo '<script language="javascript">
+  window.opener.document.location="verPedidos/INSERT_OK"
+  window.close();
+  </script>';
+}
+*/
+
+  }
+
+
+}
+
+
 
 
   public function inicioBio(){

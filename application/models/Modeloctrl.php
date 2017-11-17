@@ -556,8 +556,12 @@ class Modeloctrl extends CI_Model{
 		$this->db->where('id_almacen', $id_almacen);
 		$this->db->where('id_articulo', $id_articulo);
 		$res = $this->db->get('stock');
-		$cantidad = $res->result()[0]->cantidad;
-		return $cantidad;
+
+		if ($res->num_rows() == 1){
+			$cantidad = $res->result()[0]->cantidad;
+			return $cantidad;
+		}else
+			return 0;
 	}
 
 	function consultaPrecio($id_articulo){
@@ -687,8 +691,6 @@ class Modeloctrl extends CI_Model{
 
 	}
 
-
-
 	function selectArtMultiples(){
 		$res = $this->db->query('SELECT id, codigo FROM articulos WHERE id NOT IN (SELECT id_articulo FROM articulo_unico)');
 		return json_decode(json_encode($res->result()), True);
@@ -717,19 +719,19 @@ class Modeloctrl extends CI_Model{
 		}
 	}
 
-	public function consultArtPedidos($id){
+	function consultArtPedidos($id){
 		$this->db->where('id_pedido',$id);
 		$res = $this->db->get('articulos_pedidos');
 		return json_decode(json_encode($res->result()),True);
 	}
 
-	public function updateStockPush($articulos){
+	function guardaStock($articulos){
 		foreach ($articulos as $stock) {
 			$this->db->where('id_articulo',$stock['id_articulo']);
 			$this->db->where('id_almacen',1);
 			$get_stock = $this->db->get('stock');
-
-			if ($get_stock == null){
+			$stock['id_almacen'] = 1;
+			if (empty($get_stock->result())){
 				$this->db->set($stock);
 				$this->db->insert('stock');
 			}else{
@@ -740,10 +742,43 @@ class Modeloctrl extends CI_Model{
 		}
 	}
 
-	public function checkPedido($id){
+
+	function updateStockPush($articulos){
+		//echo "<pre>";		print_r($articulos);		exit;
+		foreach ($articulos as $stock) {
+			$this->db->where('id_articulo',$stock['id_articulo']);
+			$this->db->where('id_almacen',$stock['id_almacen']);
+			$get_stock = $this->db->get('stock');
+
+			if (empty($get_stock->result())){
+
+				$this->db->set($stock);
+				$this->db->insert('stock');
+			}else{
+
+				$this->db->set('cantidad','cantidad + '.$stock['cantidad'], false);
+				$this->db->where('id',$get_stock->result()[0]->id);
+				$this->db->update('stock');
+			}
+
+		}
+	}
+
+	function checkPedido($id){
 		$this->db->set('status',1);
 		$this->db->where('id',$id);
 		$this->db->update('pedidos');
+	}
+
+
+	function eliminarPedido($id){
+		$this->db->where('id_pedido',$id);
+		$this->db->delete('articulos_pedidos');
+
+		$this->db->where('id',$id);
+		$this->db->delete('pedidos');
+
+
 	}
 
 
