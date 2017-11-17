@@ -1596,6 +1596,30 @@ public function insertPedStock(){
     echo "inicio Biomedico";
   }
 
+  public function test(){
+    $data['biomedicos'] = $this->modeloctrl->selectBio();
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump');
+    //$data['inventario'] = $this->modeloctrl->selectStock();
+    $data['pedidos'] = $this->modeloctrl->selectPedidos();
+    $this->load->view('encabezado');
+    $this->load->view('test',$data);
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    //$this->load->view('GestionBio/verBiomedicos',$data);
+    //$this->load->view('Inventario/verInventario',$data);
+    $this->load->view('Pedidos/verPedidos',$data);
+
+    $this->load->view('pie');
+  }
+
 
 
 

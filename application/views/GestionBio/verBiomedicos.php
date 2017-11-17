@@ -1,34 +1,37 @@
-<div class="container">
-  <center>
-    <h4>Lista de Biomedicos</h4>
-  </center>
-  <div class="right-align">
-    <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
-    <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarBio" id="test">Editar<i class="material-icons right">edit</i></a>
-    <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
-  </div>
-  <table class="bordered highlight">
-    <thead>
-      <tr>
-        <th>NO.</th>
-        <th>Nombre</th>
-        <th>Usuario</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php $x = 0;
-      foreach ($biomedicos as $biomedico) { ?>
+<main>
+  <div class="container">
+    <center>
+      <h4>Lista de Biomedicos</h4>
+    </center>
+    <div class="right-align">
+      <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
+      <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarBio" id="test">Editar<i class="material-icons right">edit</i></a>
+      <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
+    </div>
+    <table class="bordered highlight">
+      <thead>
         <tr>
-          <?=form_hidden('id_us',$biomedico['id']) ?>
-          <?=form_hidden('id_tipo',$biomedico['tipo']) ?>
-          <td><?=++$x?></td>          
-          <td><?=$biomedico['nombre'].' '.$biomedico['apellidop'].' '.$biomedico['apellidom']?></td>
-          <td><?=$biomedico['usuario']?></td>
+          <th>NO.</th>
+          <th>Nombre</th>
+          <th>Usuario</th>
         </tr>
-      <?php } ?>
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        <?php $x = 0;
+        foreach ($biomedicos as $biomedico) { ?>
+          <tr>
+            <?=form_hidden('id_us',$biomedico['id']) ?>
+            <?=form_hidden('id_tipo',$biomedico['tipo']) ?>
+            <td><?=++$x?></td>
+            <td><?=$biomedico['nombre'].' '.$biomedico['apellidop'].' '.$biomedico['apellidom']?></td>
+            <td><?=$biomedico['usuario']?></td>
+          </tr>
+        <?php } ?>
+      </tbody>
+    </table>
+  </div>
+  
+</main>
 
 
  <!-- Modal Structure -->
