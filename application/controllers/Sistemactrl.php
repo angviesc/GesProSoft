@@ -6,7 +6,8 @@ class Sistemactrl extends CI_Controller {
   function __construct(){
     parent::__construct();
 
-    $this->arr_MenAdmin = array('Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo/1')),
+    $this->arr_MenAdmin = array('Nuevo articulo' =>  array(
+                                      'popUp' => site_url('Sistemactrl/nuevoArticulo/1')),
                                 'Inventario' => array(
                                       'Nuevo articulo' =>  array( 'popUp' => site_url('Sistemactrl/nuevoArticulo/1')),
                                       'Buscar articulo' => site_url('Sistemactrl/SinFuncion'),
@@ -103,12 +104,14 @@ class Sistemactrl extends CI_Controller {
 
   public function inicioAdm(){
     if ($this->session->userdata('tipo') == 1){
+      $usuario['usuario'] = $this->session->userdata('user');
+      $usuario['nombre'] = $this->session->userdata('usuario');
       $this->load->view('encabezado');
-      //echo Crear_menu($this->arr_MenAdmin);
-      echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+      $this->load->view('menuAdmin',$usuario);
+      /*
       echo "Inicio Administrador<br>";
       echo $this->agent->platform()."<br>";
-      echo ($this->agent->is_mobile())? "Movil" : "Escritorio";
+      echo ($this->agent->is_mobile())? "Movil" : "Escritorio";*/
       $this->load->view('pie');
     }else{
       redirect('Sistemactrl/acceso','refresh');
@@ -1613,9 +1616,9 @@ public function insertPedStock(){
                  'screeny' => 100, 'window_name' => '_blank',
                   'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
-    //$this->load->view('GestionBio/verBiomedicos',$data);
+    $this->load->view('GestionBio/verBiomedicos',$data);
     //$this->load->view('Inventario/verInventario',$data);
-    $this->load->view('Pedidos/verPedidos',$data);
+    //$this->load->view('Pedidos/verPedidos',$data);
 
     $this->load->view('pie');
   }
