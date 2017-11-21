@@ -1,34 +1,35 @@
-
- <div class="container">
-   <center>
-     <h4>Lista de Departamentos</h4>
-   </center>
-   <div class="right-align">
-     <?= anchor_popup('Sistemactrl/nuevoDpto', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
-     <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarDpto">Editar<i class="material-icons right">edit</i></a>
-     <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
-   </div>
-   <table class="bordered highlight">
-     <thead>
-       <tr>
-         <th>NO.</th>
-         <th>Departamento</th>
-         <th>Areas</th>
-       </tr>
-     </thead>
-     <tbody>
-       <?php $x = 0;
-       foreach ($departamentos as $departamento) { ?>
-         <tr>
-           <?=form_hidden('id_us',$departamento['id']) ?>
-           <td><?=++$x?></td>
-           <td><?=$departamento['nombre']?></td>
-           <td><?= (isset($areas[$departamento['id']]))? $areas[$departamento['id']] : '' ?></td>
-         </tr>
-       <?php } ?>
-     </tbody>
-   </table>
- </div>
+<main>
+  <div class="container">
+    <center>
+      <h4>Lista de Departamentos</h4>
+    </center>
+    <div class="right-align">
+      <?= anchor_popup('Sistemactrl/nuevoDpto', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
+      <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarDpto">Editar<i class="material-icons right">edit</i></a>
+      <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
+    </div>
+    <table class="bordered highlight">
+      <thead>
+        <tr>
+          <th>NO.</th>
+          <th>Departamento</th>
+          <th>Areas</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php $x = 0;
+        foreach ($departamentos as $departamento) { ?>
+          <tr>
+            <?=form_hidden('id_us',$departamento['id']) ?>
+            <td><?=++$x?></td>
+            <td><?=$departamento['nombre']?></td>
+            <td><?= (isset($areas[$departamento['id']]))? $areas[$departamento['id']] : '' ?></td>
+          </tr>
+        <?php } ?>
+      </tbody>
+    </table>
+  </div>  
+</main>
 
 
   <!-- Modal Structure -->

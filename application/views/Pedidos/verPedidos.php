@@ -1,12 +1,13 @@
-<div class="container">
-  <center>
-    <h4>Lista de pedidos</h4>
-  </center>
-  <div class="right-align">
-    <?= anchor_popup('Sistemactrl/nuevoPedido', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
-    <?= anchor_popup('Sistemactrl/verPedido', 'Ver <i class="material-icons right">add</i>', $atts) ?>
-    <!--
-    <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarAlm" id="test">Editar<i class="material-icons right">edit</i></a>
+<main>
+  <div class="container">
+    <center>
+      <h4>Lista de pedidos</h4>
+    </center>
+    <div class="right-align">
+      <?= anchor_popup('Sistemactrl/nuevoPedido', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
+      <?= anchor_popup('Sistemactrl/verPedido', 'Ver <i class="material-icons right">add</i>', $atts) ?>
+      <!--
+      <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarAlm" id="test">Editar<i class="material-icons right">edit</i></a>
     -->
     <a href="#" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="btn-recibe" id="btn-recibe">Recibir Pedido<i class="material-icons right">edit</i></a>
     <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="btn-delete-pedido">Eliminar<i class="material-icons right">delete</i></a>
@@ -26,7 +27,7 @@
     <tbody id="tabla-pedidos">
       <?php
       $x = 0;
-       foreach ($pedidos as $pedido) { ?>
+      foreach ($pedidos as $pedido) { ?>
         <tr>
           <?=form_hidden('id_us',$pedido['id']) ?>
           <?=form_hidden('status',$pedido['status']) ?>
@@ -38,11 +39,12 @@
           <td>$ <?=(empty($pedido['total']))? '0' : $pedido['total']?></td>
           <td><?=($pedido['status'] == 0)? 'Activo' : 'Recibido' ?></td>
         </tr>
-    <?php  } ?>
+      <?php  } ?>
 
     </tbody>
   </table>
-</div>
+</div>  
+</main>
 
 
  <!-- Modal Structure -->

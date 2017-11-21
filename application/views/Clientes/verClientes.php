@@ -1,41 +1,43 @@
-<div class="container">
-  <center>
-    <h4>Lista de clientes</h4>
-  </center>
+<main>
+  <div class="container">
+    <center>
+      <h4>Lista de clientes</h4>
+    </center>
 
-  <div class="right-align">
-    <?= anchor_popup('Sistemactrl/nuevoCliente', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
-    <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarCliente" >Editar<i class="material-icons right">edit</i></a>
-    <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
-  </div>
-  <table class="bordered highlight">
-    <thead>
-      <tr>
-        <th>NO.</th>
-        <th>Cliente</th>
-        <th>Nombre</th>
-        <th>Direccion</th>
-        <th>Telefono</th>
-        <th>Correo electronico</th>
-      </tr>
-    </thead>
-    <tbody>
-      <?php
-      $x = 0;
-      foreach ($cleintes as $cliente){ ?>
+    <div class="right-align">
+      <?= anchor_popup('Sistemactrl/nuevoCliente', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
+      <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarCliente" >Editar<i class="material-icons right">edit</i></a>
+      <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
+    </div>
+    <table class="bordered highlight">
+      <thead>
         <tr>
-          <?=form_hidden('id_us',$cliente['id']) ?>
-          <td><?=++$x?></td>
-          <td><?=$cliente['nombre_cliente']?></td>
-          <td><?=$cliente['nombre'].' '.$cliente['apellidop'].' '.$cliente['apellidom']?></td>
-          <td><?=$cliente['direccion_fac']?></td>
-          <td><?=$cliente['telefono']?></td>
-          <td><?=$cliente['correo']?></td>
+          <th>NO.</th>
+          <th>Cliente</th>
+          <th>Nombre</th>
+          <th>Direccion</th>
+          <th>Telefono</th>
+          <th>Correo electronico</th>
         </tr>
-      <?php } ?>
-    </tbody>
-  </table>
-</div>
+      </thead>
+      <tbody>
+        <?php
+        $x = 0;
+        foreach ($cleintes as $cliente){ ?>
+          <tr>
+            <?=form_hidden('id_us',$cliente['id']) ?>
+            <td><?=++$x?></td>
+            <td><?=$cliente['nombre_cliente']?></td>
+            <td><?=$cliente['nombre'].' '.$cliente['apellidop'].' '.$cliente['apellidom']?></td>
+            <td><?=$cliente['direccion_fac']?></td>
+            <td><?=$cliente['telefono']?></td>
+            <td><?=$cliente['correo']?></td>
+          </tr>
+        <?php } ?>
+      </tbody>
+    </table>
+  </div>  
+</main>
 
 <!-- Modal Structure -->
 <div id="modal1" class="modal">

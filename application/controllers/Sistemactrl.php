@@ -140,6 +140,7 @@ class Sistemactrl extends CI_Controller {
       unset ($empleado['password']);
       unset ($empleado['password2']);
       unset ($empleado['submitGua']);
+      unset ($empleado['sed']);
       $this->modeloctrl->insertarBio($empleado,$usuario);
 
       if ($this->input->post('sed')){
@@ -157,7 +158,8 @@ class Sistemactrl extends CI_Controller {
 
   public function verBio(){
     if ($this->session->userdata('tipo') == 1){
-
+      $usuario['usuario'] = $this->session->userdata('user');
+      $usuario['nombre'] = $this->session->userdata('usuario');
       $data['biomedicos'] = $this->modeloctrl->selectBio();
       $data['atts'] = array( 'width' => 800, 'height' => 700,
                    'scrollbars' => 'yes', 'status' => 'yes',
@@ -166,7 +168,7 @@ class Sistemactrl extends CI_Controller {
                     'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
       $this->load->view('encabezado');
-      echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+      ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);      
       $this->load->view('GestionBio/verBiomedicos',$data);
       $this->load->view('pie');
     }else{
@@ -456,6 +458,8 @@ public function consultaArea(){
 
 public function verArticulos(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
 
     $data['articulos'] = $this->modeloctrl->selectArt();
     $data['atts'] = array( 'width' => 800, 'height' => 700,
@@ -465,7 +469,7 @@ public function verArticulos(){
                   'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Articulos/verArticulos',$data);
     $this->load->view('pie');
   }else{
@@ -475,6 +479,10 @@ public function verArticulos(){
 
 public function verInentario(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
+
     $data['atts'] = array( 'width' => 800, 'height' => 700,
                  'scrollbars' => 'yes', 'status' => 'yes',
                  'resizable' => 'yes', 'screenx' => 100,
@@ -483,8 +491,7 @@ public function verInentario(){
     $data['inventario'] = $this->modeloctrl->selectStock();
 
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
-    //echo "<pre>";    print_r($data['inventario']);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Inventario/verInventario',$data);
     $this->load->view('pie');
   }else{
@@ -525,6 +532,8 @@ public function insertarAlm(){
 
 public function verAlm(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
     $data['atts'] = array( 'width' => 800, 'height' => 700,
                  'scrollbars' => 'yes', 'status' => 'yes',
                  'resizable' => 'yes', 'screenx' => 100,
@@ -532,7 +541,7 @@ public function verAlm(){
                   'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
     $data['almacenes'] = $this->modeloctrl->selectAlm();
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Almacenes/verAlmacenes',$data);
     $this->load->view('pie');
   }else{
@@ -626,8 +635,11 @@ public function verDpto(){
 
     $data['areas'] = $dptoxarea;
 
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
+
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Departamentos/verDptos',$data);
     $this->load->view('pie');
   }else{
@@ -713,6 +725,9 @@ public function insertarProv(){
 public function verProveedores(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
 
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
+
     $data['proveedores'] = $this->modeloctrl->selectProv();
 
     $data['atts'] = array( 'width' => 800, 'height' => 700,
@@ -722,7 +737,7 @@ public function verProveedores(){
                   'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Proveedores/verProv',$data);
     $this->load->view('pie');
 
@@ -803,6 +818,9 @@ public function insertarCliente(){
 public function verClientes(){
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
 
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
+
     $data['cleintes'] = $this->modeloctrl->selectClientes();
 
     $data['atts'] = array( 'width' => 800, 'height' => 700,
@@ -812,7 +830,7 @@ public function verClientes(){
                   'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('clientes/verClientes',$data);
     $this->load->view('pie');
 
@@ -861,6 +879,9 @@ public function eliminarCliente(){
 public function verPedidos(){
 
   if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
+
     $data['atts'] = array( 'width' => 800, 'height' => 700,
                  'scrollbars' => 'yes', 'status' => 'yes',
                  'resizable' => 'yes', 'screenx' => 100,
@@ -868,10 +889,8 @@ public function verPedidos(){
                   'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
     $data['pedidos'] = $this->modeloctrl->selectPedidos();
-    //echo "<pre>";    print_r($data['pedidos']);    exit;
-
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Pedidos/verPedidos',$data);
     $this->load->view('pie');
   }else{
@@ -1132,8 +1151,11 @@ public function transferirStock(){
       }
     }
 
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
+
     $this->load->view('encabezado');
-    echo Crear_menuMaterial('Usuario',$this->arr_MenAdmin);
+    ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Stock/tranStock',$data);
     $this->load->view('pie');
   }else{
@@ -1596,7 +1618,19 @@ public function insertPedStock(){
 
 
   public function inicioBio(){
-    echo "inicio Biomedico";
+    if ($this->session->userdata('tipo') == 2){
+      $usuario['usuario'] = $this->session->userdata('user');
+      $usuario['nombre'] = $this->session->userdata('usuario');
+      $this->load->view('encabezado');
+      $this->load->view('menuBio',$usuario);
+      /*
+      echo "Inicio Administrador<br>";
+      echo $this->agent->platform()."<br>";
+      echo ($this->agent->is_mobile())? "Movil" : "Escritorio";*/
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
   }
 
   public function test(){
@@ -1609,7 +1643,7 @@ public function insertPedStock(){
     //$data['inventario'] = $this->modeloctrl->selectStock();
     $data['pedidos'] = $this->modeloctrl->selectPedidos();
     $this->load->view('encabezado');
-    $this->load->view('test',$data);
+    $this->load->view('workit',$data);
     $data['atts'] = array( 'width' => 800, 'height' => 700,
                  'scrollbars' => 'yes', 'status' => 'yes',
                  'resizable' => 'yes', 'screenx' => 100,
@@ -1621,6 +1655,34 @@ public function insertPedStock(){
     //$this->load->view('Pedidos/verPedidos',$data);
 
     $this->load->view('pie');
+  }
+
+  public function test2(){
+
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+
+    $data['departamentos'] = $this->modeloctrl->selectDpto();
+    $areas = $this->modeloctrl->selectAreas();
+    $dptoxarea = array();
+
+    foreach ($areas as $area) {
+      if (isset($dptoxarea[$area['id_departamento']]))
+      $dptoxarea[$area['id_departamento']] .= ', '.$area['nombre'];
+      else
+      $dptoxarea[$area['id_departamento']] = $area['nombre'];
+    }
+
+    $data['areas'] = $dptoxarea;
+
+    $this->load->view('encabezado');
+    $this->load->view('test');
+    $this->load->view('Departamentos/verDptos',$data);
+    $this->load->view('pie');
+
   }
 
 

@@ -1,3 +1,3 @@
 <center>
-  <h6>Bienvenido <br> Ultima actualización 12/octubre/2017</h6>
+  <h6>Bienvenido <br> Ultima actualización 21/Noviembre/2017</h6>
 </center>

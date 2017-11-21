@@ -731,7 +731,8 @@ class Modeloctrl extends CI_Model{
 			$this->db->where('id_almacen',1);
 			$get_stock = $this->db->get('stock');
 			$stock['id_almacen'] = 1;
-			if (empty($get_stock->result())){
+			$temp = $get_stock->result();
+			if (empty($temp)){
 				$this->db->set($stock);
 				$this->db->insert('stock');
 			}else{
@@ -750,7 +751,8 @@ class Modeloctrl extends CI_Model{
 			$this->db->where('id_almacen',$stock['id_almacen']);
 			$get_stock = $this->db->get('stock');
 
-			if (empty($get_stock->result())){
+			$temp = $get_stock->result();
+			if (empty($temp)){
 
 				$this->db->set($stock);
 				$this->db->insert('stock');
