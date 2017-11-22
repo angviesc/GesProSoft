@@ -632,7 +632,7 @@ class Modeloctrl extends CI_Model{
 	}
 
 	function consultStock($id){
-		$this->db->select('a.codigo, a.nombre, al.nombre as almacen, s.*');
+		$this->db->select('a.codigo, a.nombre, a.descripcion, al.nombre as almacen, s.*');
 		$this->db->join('articulos a', 's.id_articulo = a.id', 'left');
 		$this->db->join('almacenes al', 's.id_almacen = al.id', 'inner');
 		$this->db->where('id_almacen',$id);
@@ -780,7 +780,22 @@ class Modeloctrl extends CI_Model{
 		$this->db->where('id',$id);
 		$this->db->delete('pedidos');
 
+	}
 
+	function consultPedido($id){
+		$this->db->select('p.nombre_pedido, p.fecha_emision, p.fecha_llegada, ps.nombre_proveedor as proveedor, as.nombre as articulo, as.codigo as codigo, a.cantidad as cantidad, a.precio_compra as precio');
+		$this->db->from('pedidos p');
+		$this->db->join('articulos_pedidos a','p.id = a.id_pedido','left');
+		$this->db->join('proveedores ps','p.id_proveedor = ps.id','left');
+		$this->db->join('articulos as','a.id_articulo = as.id','left');
+		$this->db->where('p.id',$id);
+		$res = $this->db->get();
+		return json_decode(json_encode($res->result()),True);
+	}
+
+	function selectBitacora(){
+		$res = $this->db->get('bitacora');
+		return json_decode(json_encode($res->result()),True);
 	}
 
 

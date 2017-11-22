@@ -27,6 +27,12 @@ td.reglon-editable{
 input[type=number]:not(.browser-default){
   margin: 0 0 6px 0;
 }
+
+tbody{
+  cursor:pointer;
+  cursor: hand;
+}
+.pagination li.active{background-color:#263238}
 /*
 .contador_inv{
 }

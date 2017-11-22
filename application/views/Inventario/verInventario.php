@@ -1,14 +1,20 @@
+<link rel="stylesheet" type="text/css" href="<?= base_url('assets/css/datatables.css') ?>">
+<script type="text/javascript" charset="utf8" src="<?= base_url('assets/js/datatables.js') ?>"></script>
+<script type="text/javascript" charset="utf8" src="<?= base_url('assets/js/boots.js') ?>"></script>
+
 <main>
   <div class="container">
     <center>
       <h4>Articulos en existencia</h4>
     </center>
     <div class="right-align">
+      <!--
       <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
       <a href="#" onclick="ventanaFlotante(this)" class="waves-effect waves-light btn blue-grey darken-3 disabled" name="editarBio" id="test">Editar<i class="material-icons right">edit</i></a>
       <a href="#modal1" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="eliminarBio">Eliminar<i class="material-icons right">delete</i></a>
+    -->
     </div>
-    <table class="bordered highlight">
+    <table class="bordered highlight responsive-table tabla-paginada" id="table_id">
       <thead>
         <tr>
           <th>NO.</th>
@@ -55,3 +61,9 @@
  <?= form_close()?>
  </div>
 <input type="hidden" name="link" id="link" value="<?=site_url('Sistemactrl')?>" />
+
+<script type="text/javascript">
+$(document).ready( function () {
+$('#table_id').DataTable();
+} );
+</script>

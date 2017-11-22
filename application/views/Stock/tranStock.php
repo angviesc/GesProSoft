@@ -1,5 +1,6 @@
 <main>
   <div class="container">
+    <h4>Transferir Stock</h4>
     <h6>Seleccione Stock que desea transferir</h6>
     <div class="input-field" >
       <select name="selectStock" id="selectStock">
@@ -39,7 +40,7 @@
       <input type="number" id="cant-trans" name="cant-trans" value="">
       <label for="cant-trans">Cantidad:</label>
     </div>
-    <a href="#" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="btn-stock">Transferir<i class="material-icons right">delete</i></a>
+    <a href="#" class="waves-effect waves-light btn modal-trigger blue-grey darken-3 disabled" id="btn-stock">Transferir<i class="material-icons right">swap_horiz</i></a>
 
   </div>
 </main>

@@ -1,3 +1,5 @@
+<?php //echo '<pre>';print_r($stock);
+ ?>
 <table>
   <thead>
     <tr>
@@ -14,7 +16,7 @@
         <input type="hidden" name="id_stock[]" value="<?=$articulo['id']?>">
         <td><?=$articulo['codigo'] ?></td>
         <td><?=$articulo['nombre'] ?></td>
-        <td><?=$articulo['id'] ?></td>
+        <td><?=$articulo['descripcion'] ?></td>
         <td><?=$articulo['almacen'] ?></td>
         <td><?=$articulo['cantidad'] ?></td>
       </tr>

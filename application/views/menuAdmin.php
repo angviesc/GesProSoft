@@ -21,16 +21,16 @@ $atts = array( 'width' => 800, 'height' => 700,
   </li>
 
   <li> <?= anchor_popup('Sistemactrl/nuevoArticulo/1', 'Nuevo Articulo', $atts) ?></li>
+  <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/verBitacora')?>">Ver bitacora</a></li>
   <li><div class="divider"></div></li>
-
+ 
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Inventario<i class="material-icons">assignment</i></a>
+        <a class="collapsible-header">Inventario<i class="material-icons">content_paste</i></a>
         <div class="collapsible-body">
           <ul>
             <li><?= anchor_popup('Sistemactrl/nuevoArticulo/1', 'Nuevo Articulo', $atts) ?></li>
-            <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/SinFuncion')?>">Buscar articulo</a></li>
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/verArticulos')?>">Ver articulos</a></li>
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/verInentario')?>">Ver inventario</a></li>
             <li class="divider"></li>
@@ -49,7 +49,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Departamentos<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">Departamentos<i class="material-icons">folder_shared</i></a>
         <div class="collapsible-body">
           <ul>
             <li><?= anchor_popup('Sistemactrl/nuevoDpto/1', 'Nuevo Departamento', $atts) ?></li>
@@ -79,7 +79,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Proveedores<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">Proveedores<i class="material-icons">supervisor_account</i></a>
         <div class="collapsible-body">
           <ul>
             <li><?= anchor_popup('Sistemactrl/nuevoProv/1', 'Nuevo proveedor', $atts) ?></li>
@@ -93,7 +93,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">clientes<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">clientes<i class="material-icons">assignment_ind</i></a>
         <div class="collapsible-body">
           <ul>
             <li><?= anchor_popup('Sistemactrl/nuevoCliente/1', 'Nuevo cliente', $atts) ?></li>
@@ -109,7 +109,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Administrar biomédicos<i class="material-icons">person</i></a>
+        <a class="collapsible-header">Administrar biomédicos<i class="material-icons">account_circle</i></a>
         <div class="collapsible-body">
           <ul>
             <li><?= anchor_popup('Sistemactrl/nuevoBio/1', 'Nuevo Biomedico', $atts) ?></li>
@@ -123,7 +123,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Informes<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">Informes<i class="material-icons">assessment</i></a>
         <div class="collapsible-body">
           <ul>
             <li><a href="#!">First</a></li>
@@ -139,7 +139,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Sistema<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">Sistema<i class="material-icons">settings</i></a>
         <div class="collapsible-body">
           <ul>
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/cerrarSesion')?>">Cerrar Sesion</a></li>
@@ -153,7 +153,6 @@ $atts = array( 'width' => 800, 'height' => 700,
 
 <nav class="nav-wrapper blue-grey darken-4">
   <div class="nav-wrapper">
-    <a href="#" class="brand-logo">Logo</a>
     <a href="#" data-activates="slide-out" class="button-collapse"><i class="material-icons">menu</i></a>
   </div>
 </nav>

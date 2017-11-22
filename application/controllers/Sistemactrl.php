@@ -176,6 +176,27 @@ class Sistemactrl extends CI_Controller {
     }
   }
 
+  public function verBitacora(){
+    if ($this->session->userdata('tipo') == 1){
+      $usuario['usuario'] = $this->session->userdata('user');
+      $usuario['nombre'] = $this->session->userdata('usuario');
+      $data['bitacora'] = $this->modeloctrl->selectBitacora();
+/*
+      $data['atts'] = array( 'width' => 800, 'height' => 700,
+                    'scrollbars' => 'yes', 'status' => 'yes',
+                   'resizable' => 'yes', 'screenx' => 100,
+                   'screeny' => 100, 'window_name' => '_blank',
+                    'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+*/
+      $this->load->view('encabezado');
+      ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
+      $this->load->view('Bitacora/verBitacora',$data);
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
+  }
+
   public function editarBio(){
     if ($this->session->userdata('tipo') == 1){
       $id = $this->uri->segment(3);
@@ -831,7 +852,7 @@ public function verClientes(){
 
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
-    $this->load->view('clientes/verClientes',$data);
+    $this->load->view('Clientes/verClientes',$data);
     $this->load->view('pie');
 
   }else{
@@ -896,6 +917,35 @@ public function verPedidos(){
   }else{
     redirect('Sistemactrl/acceso','refresh');
   }
+
+}
+
+public function verPedido(){
+
+
+    $pedido = $this->modeloctrl->consultPedido($this->uri->segment(3));
+
+    $data['pedido'] = array('folio' => $pedido[0]['nombre_pedido'],
+                    'fecha_emision' => $pedido[0]['fecha_emision'],
+                    'fecha_llegada' => $pedido[0]['fecha_llegada'],
+                    'proveedor' => $pedido[0]['proveedor']);
+
+
+    $articulos_pedidos = array();
+
+    foreach ($pedido as $articulo) {
+      $arreglo = array('nombre' => $articulo['articulo'],
+      'codigo' => $articulo['codigo'],
+      'cantidad' => $articulo['cantidad'],
+      'precio_unitario' => $articulo['precio']);
+      array_push($articulos_pedidos, $arreglo);
+
+    }
+    $data['articulos_pedidos'] = $articulos_pedidos;
+
+    $this->load->view('encabezado');
+    $this->load->view('Pedidos/verPedido',$data);
+    $this->load->view('pie');
 
 }
 
