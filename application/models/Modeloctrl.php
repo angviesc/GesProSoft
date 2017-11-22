@@ -618,6 +618,7 @@ class Modeloctrl extends CI_Model{
 	}
 
 	function updateStock($stock){
+
 		foreach ($stock as $actualizacion) {
 			$this->db->set('cantidad', 'cantidad-'.$actualizacion['cantidad'], FALSE);
 			$this->db->where('id',$actualizacion['id_stock']);
@@ -795,6 +796,42 @@ class Modeloctrl extends CI_Model{
 
 	function selectBitacora(){
 		$res = $this->db->get('bitacora');
+		return json_decode(json_encode($res->result()),True);
+	}
+
+	function selectArtUnico(){
+		$this->db->select('au.*, a.*, al.nombre as almacen, d.nombre as departamento');
+		$this->db->from('articulo_unico au');
+		$this->db->join('articulos a','au.id_articulo = a.id','left');
+		$this->db->join('stock s','a.id = s.id_articulo','left');
+		$this->db->join('almacenes al','s.id_almacen = al.id','left');
+		$this->db->join('departamentos d','a.id_departamento = d.id','left');
+		$this->db->where('cantidad >',0);
+
+		$res = $this->db->get();
+		return json_decode(json_encode($res->result()),True);
+	}
+
+	function insertMant($mantenimiento){
+		$this->db->set($mantenimiento);
+		$this->db->insert('manteniemientos');
+
+		$id = $this->db->query('SELECT @@identity AS id');
+		if ($id->num_rows() == 1 ){
+			$id = $id->result();
+			$bitacora = array('usuario' => $this->session->userdata('user'),
+			'accion' => 'Alta',
+			'tabla' => 'manteniemientos');
+			$bitacora['registro'] = $id[0]->id;
+			$this->insertBitacora($bitacora);
+			return $id[0]->id;
+		}
+	}
+
+	function consultMant($id){
+		$this->db->where('id_articulo',$id);
+		$res = $this->db->get('manteniemientos');
+
 		return json_decode(json_encode($res->result()),True);
 	}
 

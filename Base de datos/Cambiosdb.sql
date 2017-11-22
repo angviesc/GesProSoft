@@ -33,6 +33,11 @@ ALTER TABLE `pedidos` ADD `status` INT NOT NULL AFTER `fecha_llegada`;
 ALTER TABLE `articulos_pedidos` ADD `cantidad` INT NOT NULL AFTER `id_articulo`;
 ALTER TABLE `articulos_pedidos` ADD `precio_compra` INT NOT NULL AFTER `cantidad`;
 
+ALTER TABLE `manteniemientos` ADD `costp` FLOAT NOT NULL AFTER `id_mantenimiento`;
+
+INSERT INTO `manteniemiento_tipo` (`id`, `tipo`) VALUES (1, 'Preventivo');
+INSERT INTO `manteniemiento_tipo` (`id`, `tipo`) VALUES (2, 'Correctivo');
+
 /*ALTER TABLE `bitacora` ADD `val_ant` TEXT NOT NULL AFTER `registro`, ADD `val_act` TEXT NOT NULL AFTER `val_ant`;*/
 
 /*ALTER TABLE clientes ADD direnvio VARCHAR(50) NOT NULL AFTER correo;

@@ -36,8 +36,9 @@ $atts = array( 'width' => 800, 'height' => 700,
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/verPedidos')?>">Abrir lista de pedidos</a></li>
             <li class="divider"></li>
             <li><?= anchor_popup('Sistemactrl/venderStock/1', 'Vender stock', $atts) ?></li>
-            <li><?= anchor_popup('Sistemactrl/recibirStock/1', 'Recibir stock', $atts) ?></li>
             <li><?= anchor_popup('Sistemactrl/nuevoPedido/1', 'Pedir stock', $atts) ?></li>
+            <li><?= anchor_popup('Sistemactrl/devolverStock/1', 'Devolver stock', $atts) ?></li>
+            <li><?= anchor_popup('Sistemactrl/recibirStock/1', 'Recibir stock', $atts) ?></li>
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/transferirStock')?>">Transferir stock</a></li>
           </ul>
         </div>

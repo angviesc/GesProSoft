@@ -150,6 +150,18 @@ $('tbody').on('click','tr',function (){
   $('#id_activo').val($(this).children('input').val());
 });
 
+$('.equiposUnicos').on('click','tr',function (){
+
+  var id_art = $(this).children('input[name=id_us]').val();
+  var php = $('#site_url').val()+'/cargaMantemientos/';
+  $.post( php, {id_art : id_art},
+    function(data){
+      $('#calendarioMant').html(data);
+      //  alert(data)
+    }
+  );
+});
+
 $('.delete-renglon').click(function(){
   $('#tabla-dinamica').append('<input type="hidden" name="id_area_delete[]" value="'+$('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).children('input').val()+'" />')
   $('#tabla-dinamica tbody tr').eq($('#tabla-dinamica tbody tr .active-bio').parent('tr').index()).remove();
@@ -177,13 +189,13 @@ $('tbody').on('change','.selectArt',function(){
   var index = $(this).parent().parent().parent().index();
   var id_art = $(this).val();
 
-    var php = $('#site_url').val()+'/Sistemactrl/cargarUb/';
-    $.post( php, {id_art : id_art},
-      function(data){
-        $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).html(data);
-        $('select').material_select();
-      }
-    );
+  var php = $('#site_url').val()+'/Sistemactrl/cargarUb/';
+  $.post( php, {id_art : id_art},
+    function(data){
+      $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(1).html(data);
+      $('select').material_select();
+    }
+  );
 
     $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(2).html('');
     $('#tabla-dinamica tbody').children('tr').eq(index).children('td').eq(3).html('');
