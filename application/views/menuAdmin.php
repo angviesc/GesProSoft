@@ -26,7 +26,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Inventario<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">Inventario<i class="material-icons">assignment</i></a>
         <div class="collapsible-body">
           <ul>
             <li><?= anchor_popup('Sistemactrl/nuevoArticulo/1', 'Nuevo Articulo', $atts) ?></li>
@@ -63,7 +63,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Almacenes<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">Almacenes<i class="material-icons">archive</i></a>
         <div class="collapsible-body">
           <ul>
             <li id="products_product">
@@ -109,7 +109,7 @@ $atts = array( 'width' => 800, 'height' => 700,
   <li class="no-padding">
     <ul class="collapsible collapsible-accordion">
       <li>
-        <a class="collapsible-header">Administrar biomédicos<i class="material-icons">arrow_drop_down</i></a>
+        <a class="collapsible-header">Administrar biomédicos<i class="material-icons">person</i></a>
         <div class="collapsible-body">
           <ul>
             <li><?= anchor_popup('Sistemactrl/nuevoBio/1', 'Nuevo Biomedico', $atts) ?></li>

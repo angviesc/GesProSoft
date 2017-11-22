@@ -3,7 +3,7 @@
   //echo "<pre>";  print_r($biomedico);
   ?>
   <?= form_open('Sistemactrl/actualizarBio','name = "editarBio" onsubmit="return validaBio(this);"',array('id_usuario' => $biomedico['id_usuario'], 'id_empleado' => $biomedico['id']))?>
-  <h4>Nuevo Biomédico</h4>
+  <h4>Editar Biomédico</h4>
   <div class="input-field">
     <input type="text" name="nombre" id="nombre" value="<?=$biomedico['nombre']?>" required>
     <label for="nombre">Nombre:</label>

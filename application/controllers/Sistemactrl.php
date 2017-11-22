@@ -168,7 +168,7 @@ class Sistemactrl extends CI_Controller {
                     'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
       $this->load->view('encabezado');
-      ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);      
+      ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
       $this->load->view('GestionBio/verBiomedicos',$data);
       $this->load->view('pie');
     }else{
@@ -1634,23 +1634,12 @@ public function insertPedStock(){
   }
 
   public function test(){
-    $data['biomedicos'] = $this->modeloctrl->selectBio();
-    $data['atts'] = array( 'width' => 800, 'height' => 700,
-                 'scrollbars' => 'yes', 'status' => 'yes',
-                 'resizable' => 'yes', 'screenx' => 100,
-                 'screeny' => 100, 'window_name' => '_blank',
-                  'id' => 'jump');
     //$data['inventario'] = $this->modeloctrl->selectStock();
-    $data['pedidos'] = $this->modeloctrl->selectPedidos();
-    $this->load->view('encabezado');
-    $this->load->view('workit',$data);
-    $data['atts'] = array( 'width' => 800, 'height' => 700,
-                 'scrollbars' => 'yes', 'status' => 'yes',
-                 'resizable' => 'yes', 'screenx' => 100,
-                 'screeny' => 100, 'window_name' => '_blank',
-                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
 
-    $this->load->view('GestionBio/verBiomedicos',$data);
+    $this->load->view('encabezado');
+    $this->load->view('test');
+
+    $this->load->view('workit');
     //$this->load->view('Inventario/verInventario',$data);
     //$this->load->view('Pedidos/verPedidos',$data);
 

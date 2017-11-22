@@ -340,9 +340,8 @@ $('#btn-recibe').click(function(){
   );
 });
 
-
-
 //Inizializando elementos
+
 $('.modal').modal();
 $('.button-collapse').sideNav();
 $('select').material_select();

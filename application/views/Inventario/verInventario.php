@@ -1,7 +1,7 @@
 <main>
   <div class="container">
     <center>
-      <h4>Lista de Articulos</h4>
+      <h4>Articulos en existencia</h4>
     </center>
     <div class="right-align">
       <?= anchor_popup('Sistemactrl/nuevoBio', 'Nuevo <i class="material-icons right">add</i>', $atts) ?>
@@ -36,7 +36,7 @@
       <?php } ?>
     </tbody>
   </table>
-</div>  
+</div>
 </main>
 
 
