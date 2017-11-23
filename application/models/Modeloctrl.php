@@ -727,6 +727,21 @@ class Modeloctrl extends CI_Model{
 
 	}
 
+	function selectPedidosP(){
+		$this->db->select('SUM(a.cantidad * a.precio_compra) as total, p.nombre_proveedor as proveedor, pd.*');
+		$this->db->from('pedidos pd');
+		$this->db->join('articulos_pedidos a','pd.id = a.id_pedido', 'left');
+		$this->db->join('proveedores p','pd.id_proveedor = p.id', 'left');
+		$this->db->where('pd.status',0);
+		$this->db->group_by("a.id_pedido");
+		$this->db->order_by("pd.id");
+
+		$res = $this->db->get();
+		$res = $res->result();
+
+		return json_decode(json_encode($res),True);
+	}
+
 	function selectArtMultiples(){
 		$res = $this->db->query('SELECT id, codigo FROM articulos WHERE id NOT IN (SELECT id_articulo FROM articulo_unico)');
 		return json_decode(json_encode($res->result()), True);

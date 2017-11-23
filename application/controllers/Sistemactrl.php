@@ -942,9 +942,15 @@ public function verPedidosP(){
     $usuario['usuario'] = $this->session->userdata('user');
     $usuario['nombre'] = $this->session->userdata('usuario');
 
-    $data['pedidos'] = $this->modeloctrl->selectPedidos();
+    $data['atts'] = array( 'width' => 800, 'height' => 700,
+                 'scrollbars' => 'yes', 'status' => 'yes',
+                 'resizable' => 'yes', 'screenx' => 100,
+                 'screeny' => 100, 'window_name' => '_blank',
+                  'id' => 'jump', 'class' => 'waves-effect waves-light btn blue-grey darken-3');
+    
+    $data['pedidos'] = $this->modeloctrl->selectPedidosP();
     $this->load->view('encabezado');
-    $this->load->view('Pedidos/verPedidos',$data);
+    $this->load->view('Informes/verPedidos',$data);
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');

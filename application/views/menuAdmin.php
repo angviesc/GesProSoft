@@ -130,7 +130,7 @@ $atts = array( 'width' => 800, 'height' => 700,
           <ul>
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/excelInventario')?>">Inventario<i class="material-icons">file_download</i></a></li>
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/informeAlmDpto')?>">Informe por almacen/departamento</a> </li>
-            <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/informeAlmDpto')?>">Inventario por proveedor</a> </li>
+            <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/sinFuncion')?>">Inventario por proveedor</a> </li>
             <li><?= anchor_popup('Sistemactrl/verPedidosP', 'Informe pedidos pendientes', $atts) ?></li>
             <li><a class="waves-effect" style="text-decoration: none;" href="<?=site_url('Sistemactrl/informeAlmDpto')?>">Informe de ventas</a> </li>
           </ul>
