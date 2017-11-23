@@ -13,4 +13,5 @@ $('.moveStock').on('click', 'tr', function(){
   $('#cant-trans').attr('max',$(this).children('td').eq(4).text());
   $('#cant-trans').val(0);
   $('#id_activo').val($(this).children('input').val());
+  //$('#id_activo2').val($(this).children('input').val());
 });

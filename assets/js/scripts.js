@@ -57,6 +57,7 @@ $('tbody').on('click','tr',function (){
   $(this).children('td').addClass( "active-bio" );
 
   $('#id_activo').val($(this).children('input').val());
+  $('.id_activo').val($(this).children('input').val());
 });
 
 
@@ -148,6 +149,7 @@ $('tbody').on('click','tr',function (){
   $(this).children('td').addClass( "active-bio" );
 
   $('#id_activo').val($(this).children('input').val());
+  $('.id_activo').val($(this).children('input').val());
 });
 
 $('.equiposUnicos').on('click','tr',function (){
@@ -350,6 +352,19 @@ $('#btn-recibe').click(function(){
       //window.opener.document.location="verPedidos/INSERT_OK"
     }
   );
+});
+$('.filtro').change(function(){
+
+  var id_almacen = $('#id_almacen').val();
+  var id_departamento = $('#id_departamento').val();
+
+  var php = $('#site_url').val()+'/cargarStockFiltro/';
+  $.post( php, {id_almacen : id_almacen, id_departamento: id_departamento},
+    function(data){
+      $('#tabla_inventario').html(data);
+    }
+  );
+
 });
 
 //Inizializando elementos

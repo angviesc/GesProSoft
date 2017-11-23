@@ -194,6 +194,41 @@ class Modeloctrl extends CI_Model{
 		return json_decode(json_encode($res->result()), True);
 	}
 
+	function consultaStock($filtro){
+		$this->db->select('a.codigo, a.nombre as articulo, a.costo_compra, a.costo_venta, au.marca, au.modelo, au.serie, al.nombre as almacen, d.nombre as departamento, as.nombre as area, s.cantidad');
+		$this->db->from('stock s');
+		$this->db->join('articulos a','s.id_articulo = a.id' ,'left');
+		$this->db->join('articulo_unico au','a.id = au.id_articulo','left');
+		$this->db->join('almacenes al', 's.id_almacen = al.id', 'left');
+		$this->db->join('departamentos d', 'a.id_departamento = d.id', 'left');
+		$this->db->join('areas as', 'a.id_area = as.id', 'left');
+		while ($item = current($filtro)) {
+			if($item > 0)
+				$this->db->where(key($filtro),$item);
+			next($filtro);
+		}
+		$this->db->where('s.cantidad >',0);
+
+		$res = $this->db->get();
+
+		return json_decode(json_encode($res->result()), True);
+	}
+
+	function selectInventario(){
+		$this->db->select('a.codigo, a.nombre as articulo, a.costo_compra, a.costo_venta, au.marca, au.modelo, au.serie, al.nombre as almacen, d.nombre as departamento, as.nombre as area, s.cantidad');
+		$this->db->from('stock s');
+		$this->db->join('articulos a','s.id_articulo = a.id' ,'left');
+		$this->db->join('articulo_unico au','a.id = au.id_articulo','left');
+		$this->db->join('almacenes al', 's.id_almacen = al.id', 'left');
+		$this->db->join('departamentos d', 'a.id_departamento = d.id', 'left');
+		$this->db->join('areas as', 'a.id_area = as.id', 'left');
+		$this->db->where('s.cantidad >',0);
+
+		$res = $this->db->get();
+
+		return json_decode(json_encode($res->result()), True);
+	}
+
 	function insertStock($id_articulo,$stock){
 
 		for ($i=0; $i < count($stock['ids']); $i++) {
@@ -499,7 +534,7 @@ class Modeloctrl extends CI_Model{
 			$id = $id->result();
 			$bitacora = array('usuario' => $this->session->userdata('user'),
 			'accion' => 'Alta',
-			'tabla' => 'proveedores');
+			'tabla' => 'clientes');
 			$bitacora['registro'] = $id[0]->id;
 			$this->insertBitacora($bitacora);
 		}
@@ -829,8 +864,34 @@ class Modeloctrl extends CI_Model{
 	}
 
 	function consultMant($id){
+		$this->db->select('m.*, mt.tipo');
 		$this->db->where('id_articulo',$id);
-		$res = $this->db->get('manteniemientos');
+		$this->db->join('manteniemiento_tipo mt','m.id_mantenimiento = mt.id', 'left');
+		$res = $this->db->get('manteniemientos m');
+
+		return json_decode(json_encode($res->result()),True);
+	}
+
+	function realizarMant($mantenimiento){
+		$this->db->where('id',$mantenimiento['id']);
+		$this->db->set($mantenimiento);
+		$this->db->update('manteniemientos');
+
+		$bitacora = array('usuario' => $this->session->userdata('user'),
+		'accion' => 'Actualizar',
+		'tabla' => 'manteniemientos');
+		$bitacora['registro'] = $mantenimiento['id'];
+		$this->insertBitacora($bitacora);
+	}
+
+	function consultPend($fecha){
+		$this->db->select('m.*, mt.tipo, a.codigo, a.nombre');
+		$this->db->join('articulos a','m.id_articulo = a.id','left');
+		$this->db->join('manteniemiento_tipo mt','m.id_mantenimiento = mt.id', 'left');
+		$this->db->where('fecha_programado',$fecha);
+		$this->db->where('realizado',0);
+		$res = $this->db->get('manteniemientos m');
+
 
 		return json_decode(json_encode($res->result()),True);
 	}

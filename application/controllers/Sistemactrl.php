@@ -100,6 +100,13 @@ class Sistemactrl extends CI_Controller {
     }
   }
 
+  public function alertas(){
+    $fecha = date("Y-m-d");
+    $data['pendietes'] = $this->modeloctrl->consultPend($fecha);
+    //echo "<pre>";    print_r($pendietes);
+    $this->load->view('alertas',$data);
+  }
+
 #Funciones Administrador
 
   public function inicioAdm(){
@@ -112,6 +119,7 @@ class Sistemactrl extends CI_Controller {
       echo "Inicio Administrador<br>";
       echo $this->agent->platform()."<br>";
       echo ($this->agent->is_mobile())? "Movil" : "Escritorio";*/
+      $this->alertas();
       $this->load->view('pie');
     }else{
       redirect('Sistemactrl/acceso','refresh');
@@ -170,6 +178,7 @@ class Sistemactrl extends CI_Controller {
       $this->load->view('encabezado');
       ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
       $this->load->view('GestionBio/verBiomedicos',$data);
+      $this->alertas();
       $this->load->view('pie');
     }else{
       redirect('Sistemactrl/acceso','refresh');
@@ -191,6 +200,7 @@ class Sistemactrl extends CI_Controller {
       $this->load->view('encabezado');
       ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
       $this->load->view('Bitacora/verBitacora',$data);
+      $this->alertas();
       $this->load->view('pie');
     }else{
       redirect('Sistemactrl/acceso','refresh');
@@ -492,6 +502,7 @@ public function verArticulos(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Articulos/verArticulos',$data);
+    $this->alertas();
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
@@ -514,6 +525,7 @@ public function verInentario(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Inventario/verInventario',$data);
+    $this->alertas();
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
@@ -564,6 +576,7 @@ public function verAlm(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Almacenes/verAlmacenes',$data);
+    $this->alertas();
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
@@ -662,6 +675,7 @@ public function verDpto(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Departamentos/verDptos',$data);
+    $this->alertas();
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
@@ -760,6 +774,7 @@ public function verProveedores(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Proveedores/verProv',$data);
+    $this->alertas();
     $this->load->view('pie');
 
   }else{
@@ -853,6 +868,7 @@ public function verClientes(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Clientes/verClientes',$data);
+    $this->alertas();
     $this->load->view('pie');
 
   }else{
@@ -913,11 +929,26 @@ public function verPedidos(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Pedidos/verPedidos',$data);
+    $this->alertas();
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
   }
 
+}
+
+public function verPedidosP(){
+  if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+    $usuario['usuario'] = $this->session->userdata('user');
+    $usuario['nombre'] = $this->session->userdata('usuario');
+
+    $data['pedidos'] = $this->modeloctrl->selectPedidos();
+    $this->load->view('encabezado');
+    $this->load->view('Pedidos/verPedidos',$data);
+    $this->load->view('pie');
+  }else{
+    redirect('Sistemactrl/acceso','refresh');
+  }
 }
 
 public function verPedido(){
@@ -1207,6 +1238,7 @@ public function transferirStock(){
     $this->load->view('encabezado');
     ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
     $this->load->view('Stock/tranStock',$data);
+    $this->alertas();
     $this->load->view('pie');
   }else{
     redirect('Sistemactrl/acceso','refresh');
@@ -1885,11 +1917,13 @@ public function insertPedStock(){
       $usuario['nombre'] = $this->session->userdata('usuario');
 
       $data['articulos'] = $this->modeloctrl->selectArtUnico();
+      $data['hoy'] = date("Y-m-d");
 
 
       $this->load->view('encabezado');
       ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
       $this->load->view('Mantenimiento/verEquipos',$data);
+      $this->alertas();
       $this->load->view('pie');
     }else{
       redirect('Sistemactrl/acceso','refresh');
@@ -1897,7 +1931,6 @@ public function insertPedStock(){
   }
 
   public function programarMant() {
-    echo "<pre>";
 
     $mantenimiento = array('id_articulo' => $this->input->post('id_activo'),
                            'id_mantenimiento' => $this->input->post('mantenimiento'),
@@ -1917,20 +1950,321 @@ public function insertPedStock(){
     $this->load->view('Mantenimiento/fechasMant',$data);
   }
 
+  public function realizarMant(){
+
+    $mantenimiento = array('id' => $this->uri->segment(3),
+                           'fecha_realizado' => date("Y-m-d"),
+                            'realizado' => 1);
+    $this->modeloctrl->realizarMant($mantenimiento);
+    redirect('Sistemactrl/Mantenimientos','refresh');
+
+  }
+
+  public function realizarMantenimiento() {
+    //echo "<pre>";    print_r($this->input->post());
+
+    $mantenimiento = array('id_articulo' => $this->input->post('id_activo'),
+                           'id_mantenimiento' => $this->input->post('mantenimiento'),
+                           'fecha_programado' => $this->input->post('fecha_programado_submit'),
+                           'fecha_realizado' => $this->input->post('fecha_realizado_submit'),
+                           'costp' => $this->input->post('costo_venta'),
+                           'realizado' => 1);
+
+    //                       print_r($mantenimiento);
+    $this->modeloctrl->insertMant($mantenimiento);
+    redirect('Sistemactrl/Mantenimientos','refresh');
+  }
+
+  public function pendieteMant(){
+    if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+      $usuario['usuario'] = $this->session->userdata('user');
+      $usuario['nombre'] = $this->session->userdata('usuario');
+      $fecha = date("Y-m-d");
+      $data['pendietes'] = $this->modeloctrl->consultPend($fecha);
+
+      $this->load->view('encabezado');
+      ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
+      $this->load->view('Mantenimiento/mantPendientes',$data);
+      $this->alertas();
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
+  }
+
+  public function informeAlmDpto(){
+    if ($this->session->userdata('tipo') == 1 || $this->session->userdata('tipo') == 2){
+      $data['sed'] = array('sed' => $this->uri->segment(3));
+
+      $usuario['usuario'] = $this->session->userdata('user');
+      $usuario['nombre'] = $this->session->userdata('usuario');
+
+      $almacenes = $this->modeloctrl->selectAlm();
+      if ($almacenes == null) {
+        $data['selectAlm'] = '<option value="" disabled selected style="margin-bottom: 1px;">Sin Almacenes registrados</option>';
+      }else{
+        $data['selectAlm'] = '<option value="" disabled selected>Selecciona un almacen</option>';
+        foreach ($almacenes as $almacen) {
+          $data['selectAlm'] .= '<option value="'.$almacen['id'].'">'.$almacen['nombre'].'</option>';
+        }
+        $data['selectAlm'] .= '<option value="-1">TODO</option>';
+      }
+
+      $departamentos = $this->modeloctrl->selectDpto();
+      if ($departamentos == null) {
+        $data['selectDpto'] = '<option value="" disabled selected>Sin departamento registrado</option>';
+      }else{
+        $data['selectDpto'] = '<option value="" disabled selected>Elige un departamento</option>';
+        foreach ($departamentos as $departamento) {
+          $data['selectDpto'] .= '<option value="'.$departamento['id'].'">'.$departamento['nombre'].'</option>';
+        }
+        $data['selectDpto'] .= '<option value="-1">TODO</option>';
+      }
 
 
+      $this->load->view('encabezado');
+      ($this->session->userdata('tipo') == 1)? $this->load->view('menuAdmin',$usuario) : $this->load->view('menuBio',$usuario);
+      $this->load->view('Informes/filtroStock',$data);
+      $this->alertas();
+      $this->load->view('pie');
+    }else{
+      redirect('Sistemactrl/acceso','refresh');
+    }
+  }
+
+  public function cargarStockFiltro(){
 
 
+    if ($this->input->post('id_almacen')){
+      $filtro['s.id_almacen'] = $this->input->post('id_almacen');
+    }
 
+    if ($this->input->post('id_departamento')){
+      $filtro['a.id_departamento'] = $this->input->post('id_departamento');
+    }
 
-
-
-
-
-
+    $data['inventario'] = $this->modeloctrl->consultaStock($filtro);
+    $this->load->view('Informes/inventario',$data);
+  }
 
   public function cerrarSesion(){
     $this->session->sess_destroy();
 		redirect('','refresh');
+  }
+
+  public function excelInventario(){
+
+    $this->load->library('excel');
+		//$this->excel->createSheet();//creamos la pestaña
+    //echo "<pre>";    print_r($this->modeloctrl->selectInventario());    exit;
+    $inventario = $this->modeloctrl->selectInventario();
+
+		$this->excel->setActiveSheetIndex(0);
+		$this->excel->getActiveSheet()->setTitle('Inventario');
+
+    #CABEZAL DEL FORMATO
+		$this->excel->getActiveSheet()->setCellValue('A2', 'ARTICULOS EN EXISTENCIA');
+		//change the font size
+		$this->excel->getActiveSheet()->getStyle('A2')->getFont()->setSize(14);
+		//make the font become bold
+		$this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
+		$this->excel->getActiveSheet()->mergeCells('A2:L2');
+		$this->excel->getActiveSheet()->getStyle('A2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+    //--INICIO
+
+    $celda_inicio = 4;
+		$this->excel->getActiveSheet()->getStyle('A'.$celda_inicio.':'.'L'.$celda_inicio)->getFill()->applyFromArray(array('type' =>PHPExcel_Style_Fill::FILL_SOLID,'startcolor' => array('rgb' => '607d8b')));
+
+    $this->excel->getActiveSheet()
+		->setCellValue('A'.$celda_inicio,'NO')
+		->setCellValue('B'.$celda_inicio,'ARTICULO')
+		->setCellValue('C'.$celda_inicio,'CODIGO')
+		->setCellValue('D'.$celda_inicio,'MARCA')
+		->setCellValue('E'.$celda_inicio,'MODELO')
+		->setCellValue('F'.$celda_inicio,'SERIE')
+    ->setCellValue('G'.$celda_inicio,'DEPARTAMENTO')
+    ->setCellValue('H'.$celda_inicio,'AREA')
+    ->setCellValue('I'.$celda_inicio,'COSTO COMPRA')
+    ->setCellValue('J'.$celda_inicio,'COSTO VENTA')
+    ->setCellValue('K'.$celda_inicio,'ALMACEN')
+    ->setCellValue('L'.$celda_inicio,'CANTIDAD');
+
+    $this->excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+//--contendio
+
+    $styleArray = array(
+      'borders' => array(
+      'allborders' => array(
+            'style' => PHPExcel_Style_Border::BORDER_THIN
+            )
+        )
+    );
+
+    $this->excel->getActiveSheet()->getStyle('A'.$celda_inicio.':L'.$celda_inicio)->getFont()->setSize(10)->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('A'.$celda_inicio.':L'.$celda_inicio)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+    $celda = $celda_inicio + 1;
+    $x = 0;
+    foreach($inventario as $articulo){
+
+			$this->excel->getActiveSheet()
+			->setCellValue('A'.$celda, ++$x)
+			->setCellValue('B'.$celda, $articulo['articulo'])
+			->setCellValue('C'.$celda, $articulo['codigo'])
+			->setCellValue('D'.$celda, $articulo['marca'])
+			->setCellValue('E'.$celda, $articulo['modelo'])
+      ->setCellValue('F'.$celda, $articulo['serie'])
+      ->setCellValue('G'.$celda, $articulo['departamento'])
+      ->setCellValue('H'.$celda, $articulo['area'])
+      ->setCellValue('I'.$celda, $articulo['costo_compra'])
+      ->setCellValue('J'.$celda, $articulo['costo_venta'])
+      ->setCellValue('K'.$celda, $articulo['almacen'])
+			->setCellValue('L'.$celda, $articulo['cantidad']);
+
+			$this->excel->getActiveSheet()->getStyle('A'.$celda.':L'.$celda)->getFont()->setSize(10);
+			$this->excel->getActiveSheet()->getStyle('E'.$celda.':L'.$celda)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+      $this->excel->getActiveSheet()->getStyle('A'.$celda.':'.$this->excel->getActiveSheet()->getHighestColumn().$this->excel->getActiveSheet()->getHighestRow())->applyFromArray($styleArray);
+
+			$celda++;
+		}
+
+    $this->excel->getActiveSheet()->setAutoFilter('A'.$celda_inicio.':L'.$celda);
+
+    $filename='Inventario.xlsx';
+
+		header('Content-Type: application/vnd.ms-excel'); //mime type
+		header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+		header('Cache-Control: max-age=0'); //no cache
+
+		//save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+		//if you want to save it as .XLSX Excel 2007 format
+		$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+		//force user to download the Excel file without writing it to server's HD
+		$objWriter->save('php://output');
+
+  }
+
+  public function excelInventarioFiltro(){
+
+    if ($this->input->post('id_almacen')){
+      $filtro['s.id_almacen'] = $this->input->post('id_almacen');
+    }
+
+    if ($this->input->post('id_departamento')){
+      $filtro['a.id_departamento'] = $this->input->post('id_departamento');
+    }
+
+    $this->load->library('excel');
+		//$this->excel->createSheet();//creamos la pestaña
+    //echo "<pre>";    print_r($this->modeloctrl->selectInventario());    exit;
+
+    $inventario = $this->modeloctrl->consultaStock($filtro);
+
+		$this->excel->setActiveSheetIndex(0);
+		$this->excel->getActiveSheet()->setTitle('Inventario');
+
+    #CABEZAL DEL FORMATO
+		$this->excel->getActiveSheet()->setCellValue('A2', 'ARTICULOS EN EXISTENCIA POR ALMACEN Y/O DEPARTAMENTO');
+		//change the font size
+		$this->excel->getActiveSheet()->getStyle('A2')->getFont()->setSize(14);
+		//make the font become bold
+		$this->excel->getActiveSheet()->getStyle('A2')->getFont()->setBold(true);
+		$this->excel->getActiveSheet()->mergeCells('A2:L2');
+		$this->excel->getActiveSheet()->getStyle('A2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+    //--INICIO
+
+    $celda_inicio = 4;
+		$this->excel->getActiveSheet()->getStyle('A'.$celda_inicio.':'.'L'.$celda_inicio)->getFill()->applyFromArray(array('type' =>PHPExcel_Style_Fill::FILL_SOLID,'startcolor' => array('rgb' => '607d8b')));
+
+    $this->excel->getActiveSheet()
+		->setCellValue('A'.$celda_inicio,'NO')
+		->setCellValue('B'.$celda_inicio,'ARTICULO')
+		->setCellValue('C'.$celda_inicio,'CODIGO')
+		->setCellValue('D'.$celda_inicio,'MARCA')
+		->setCellValue('E'.$celda_inicio,'MODELO')
+		->setCellValue('F'.$celda_inicio,'SERIE')
+    ->setCellValue('G'.$celda_inicio,'DEPARTAMENTO')
+    ->setCellValue('H'.$celda_inicio,'AREA')
+    ->setCellValue('I'.$celda_inicio,'COSTO COMPRA')
+    ->setCellValue('J'.$celda_inicio,'COSTO VENTA')
+    ->setCellValue('K'.$celda_inicio,'ALMACEN')
+    ->setCellValue('L'.$celda_inicio,'CANTIDAD');
+
+    $this->excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('B')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('C')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('D')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('E')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('F')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('G')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('H')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('I')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('J')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('K')->setAutoSize(true);
+    $this->excel->getActiveSheet()->getColumnDimension('L')->setAutoSize(true);
+//--contendio
+
+    $styleArray = array(
+      'borders' => array(
+      'allborders' => array(
+            'style' => PHPExcel_Style_Border::BORDER_THIN
+            )
+        )
+    );
+
+    $this->excel->getActiveSheet()->getStyle('A'.$celda_inicio.':L'.$celda_inicio)->getFont()->setSize(10)->setBold(true);
+    $this->excel->getActiveSheet()->getStyle('A'.$celda_inicio.':L'.$celda_inicio)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+
+    $celda = $celda_inicio + 1;
+    $x = 0;
+    foreach($inventario as $articulo){
+
+			$this->excel->getActiveSheet()
+			->setCellValue('A'.$celda, ++$x)
+			->setCellValue('B'.$celda, $articulo['articulo'])
+			->setCellValue('C'.$celda, $articulo['codigo'])
+			->setCellValue('D'.$celda, $articulo['marca'])
+			->setCellValue('E'.$celda, $articulo['modelo'])
+      ->setCellValue('F'.$celda, $articulo['serie'])
+      ->setCellValue('G'.$celda, $articulo['departamento'])
+      ->setCellValue('H'.$celda, $articulo['area'])
+      ->setCellValue('I'.$celda, $articulo['costo_compra'])
+      ->setCellValue('J'.$celda, $articulo['costo_venta'])
+      ->setCellValue('K'.$celda, $articulo['almacen'])
+			->setCellValue('L'.$celda, $articulo['cantidad']);
+
+			$this->excel->getActiveSheet()->getStyle('A'.$celda.':L'.$celda)->getFont()->setSize(10);
+			$this->excel->getActiveSheet()->getStyle('E'.$celda.':L'.$celda)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+      $this->excel->getActiveSheet()->getStyle('A'.$celda.':'.$this->excel->getActiveSheet()->getHighestColumn().$this->excel->getActiveSheet()->getHighestRow())->applyFromArray($styleArray);
+
+			$celda++;
+		}
+
+    $this->excel->getActiveSheet()->setAutoFilter('A'.$celda_inicio.':L'.$celda);
+
+    $filename='Inventario.xlsx';
+
+		header('Content-Type: application/vnd.ms-excel'); //mime type
+		header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
+		header('Cache-Control: max-age=0'); //no cache
+
+		//save it to Excel5 format (excel 2003 .XLS file), change this to 'Excel2007' (and adjust the filename extension, also the header mime type)
+		//if you want to save it as .XLSX Excel 2007 format
+		$objWriter = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+		//force user to download the Excel file without writing it to server's HD
+		$objWriter->save('php://output');
   }
 }
